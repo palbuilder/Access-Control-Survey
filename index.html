@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Access Control Survey</title>
+  <meta name="theme-color" content="#ffffff"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <style>
+    :root { --pad: 14px; --radius: 14px; --border: 1px solid rgba(0,0,0,.15); }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #fff; color: #111; }
+    header { position: sticky; top: 0; background: #fff; border-bottom: var(--border); padding: var(--pad); z-index: 10; }
+    header h1 { font-size: 18px; margin: 0; }
+    main { padding: var(--pad); max-width: 900px; margin: 0 auto; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .card { border: var(--border); border-radius: var(--radius); padding: var(--pad); margin: 12px 0; }
+    .card h2 { margin: 0 0 10px; font-size: 16px; }
+    label { display: block; font-size: 12px; margin: 10px 0 4px; opacity: .9; }
+    input, select, textarea { width: 100%; padding: 10px; border: var(--border); border-radius: 12px; font-size: 14px; }
+    textarea { min-height: 80px; resize: vertical; }
+    button { padding: 10px 12px; border: var(--border); border-radius: 12px; background: #fff; font-size: 14px; }
+    button.primary { font-weight: 600; }
+    button.danger { }
+    .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; border: var(--border); font-size: 12px; }
+    .muted { opacity: .7; }
+    .grid2 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 720px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+    details { border: var(--border); border-radius: var(--radius); padding: 10px 12px; }
+    summary { cursor: pointer; font-weight: 600; }
+    .photoGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (min-width: 720px) { .photoGrid { grid-template-columns: repeat(4, 1fr); } }
+    .photo { border: var(--border); border-radius: 12px; overflow: hidden; }
+    .photo img { width: 100%; height: 120px; object-fit: cover; display: block; }
+    .small { font-size: 12px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .link { text-decoration: underline; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <h1 id="title">Access Control Survey</h1>
+      <div class="row">
+        <span class="pill" id="statusPill">Offline ready</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="app"></main>
+
+<script>
+const storeKey = "acs_data_v1";
+
+function uid() {
+  return Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+}
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(storeKey);
+    if (!raw) return { sites: {} };
+    const parsed = JSON.parse(raw);
+    if (!parsed.sites) return { sites: {} };
+    return parsed;
+  } catch {
+    return { sites: {} };
+  }
+}
+
+function saveData(data) {
+  localStorage.setItem(storeKey, JSON.stringify(data));
+}
+
+function getSite(data, siteId) {
+  return data.sites[siteId] || null;
+}
+
+function calcDoorRecommendation(door) {
+  const facts = [];
+  const needs = [];
+
+  const lockType = door.lockType || "";
+  const isExterior = (door.intExt === "exterior");
+  const panicReq = (door.panicRequired === "yes");
+  const fireRated = (door.fireRated === "yes");
+  const power = (door.powerNearDoor === "yes");
+  const wifi = (door.wifiAvailable === "yes");
+  const remote = (door.remoteMgmt === "yes");
+  const audit = (door.auditTrail === "yes");
+  const alignment = (door.alignmentIssues === "yes");
+  const pair = (door.singleOrPair === "pair");
+
+  if (alignment) needs.push("Door alignment fix before electrified hardware");
+  if (pair) needs.push("Confirm active leaf and latch strategy for pair");
+
+  let family = "Needs review";
+  let reason = [];
+
+  if (panicReq) {
+    family = power ? "Electrified panic trim plus controller" : "Mechanical panic with offline code option";
+    reason.push("Panic required");
+    if (!power) needs.push("No power at door so electrified trim may require wire path plan");
+  } else if (!power) {
+    if (remote && !wifi) {
+      family = "Offline keypad smart lock not suitable for remote";
+      reason.push("Remote requested but no power and no wifi");
+      needs.push("Decide on network plan or accept offline access");
+    } else {
+      family = "Standalone keypad lock";
+      reason.push("No power at door");
+    }
+  } else {
+    if (remote && wifi) {
+      if (lockType === "cylindrical" || lockType === "deadbolt" || lockType === "mortise") {
+        family = "Cloud managed smart lock";
+        reason.push("Remote management plus wifi available");
+      } else {
+        family = "Controller based electrified hardware";
+        reason.push("Remote management but lock type suggests electrified retrofit");
+      }
+    } else if (audit || remote) {
+      family = wifi ? "Cloud managed smart lock" : "Controller based electrified hardware";
+      reason.push("Audit or remote requested");
+      if (!wifi) needs.push("Network not confirmed so controller may need cellular or wired network");
+    } else {
+      family = power ? "Standalone keypad lock or basic electrified" : "Standalone keypad lock";
+      reason.push("Basic needs, keep it simple");
+    }
+  }
+
+  if (fireRated) needs.push("Verify rated opening hardware limits");
+  if (isExterior) needs.push("Confirm weather exposure and corrosion requirements");
+
+  return {
+    family,
+    reason: reason.length ? reason.join(", ") : "Not enough inputs",
+    needs
+  };
+}
+
+function calcDoorStatus(door) {
+  const required = ["doorId","location","intExt","singleOrPair","doorMaterial","frameMaterial","swing","handing","lockType","powerNearDoor","wifiAvailable","remoteMgmt","auditTrail","panicRequired"];
+  const missing = required.filter(k => !(door[k] && String(door[k]).trim().length));
+  return { complete: missing.length === 0, missing };
+}
+
+function toMoney(n) {
+  if (typeof n !== "number" || !isFinite(n)) return "";
+  return "$" + n.toFixed(2);
+}
+
+function estimateDoor(door) {
+  const rec = calcDoorRecommendation(door);
+  let laborHours = 1.5;
+  let partsLow = 150;
+  let partsHigh = 350;
+
+  if (rec.family.includes("Cloud")) { laborHours = 2.0; partsLow = 250; partsHigh = 450; }
+  if (rec.family.includes("Electrified panic")) { laborHours = 4.0; partsLow = 700; partsHigh = 1400; }
+  if (rec.family.includes("Controller")) { laborHours = 4.0; partsLow = 500; partsHigh = 1200; }
+
+  if (door.alignmentIssues === "yes") laborHours += 0.5;
+  if (door.singleOrPair === "pair") laborHours += 0.75;
+
+  const laborRate = 100;
+  const labor = laborHours * laborRate;
+
+  return {
+    family: rec.family,
+    notes: rec.needs,
+    laborHours,
+    labor,
+    partsLow,
+    partsHigh,
+    totalLow: labor + partsLow,
+    totalHigh: labor + partsHigh
+  };
+}
+
+function downloadTextFile(filename, text, mime) {
+  const blob = new Blob([text], { type: mime || "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(s) {
+  return String(s || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+
+function buildReportHtml(site) {
+  const created = site.createdAt ? new Date(site.createdAt).toLocaleString() : "";
+  const updated = site.updatedAt ? new Date(site.updatedAt).toLocaleString() : "";
+  let rows = "";
+  let totalLow = 0;
+  let totalHigh = 0;
+
+  const doors = Object.values(site.doors || {}).sort((a,b) => (a.doorId||"").localeCompare(b.doorId||""));
+  for (const d of doors) {
+    const est = estimateDoor(d);
+    totalLow += est.totalLow;
+    totalHigh += est.totalHigh;
+    rows += `
+      <tr>
+        <td>${escapeHtml(d.doorId)}</td>
+        <td>${escapeHtml(d.location)}</td>
+        <td>${escapeHtml(est.family)}</td>
+        <td>${escapeHtml(d.lockType || "")}</td>
+        <td>${escapeHtml(d.intExt || "")}</td>
+        <td>${escapeHtml(String(est.laborHours))}</td>
+        <td>${escapeHtml(toMoney(est.totalLow))} to ${escapeHtml(toMoney(est.totalHigh))}</td>
+      </tr>
+    `;
+  }
+
+  let needsHtml = "";
+  for (const d of doors) {
+    const est = estimateDoor(d);
+    if (est.notes && est.notes.length) {
+      needsHtml += `<h4>Door ${escapeHtml(d.doorId || "")} notes</h4><ul>` + est.notes.map(n => `<li>${escapeHtml(n)}</li>`).join("") + `</ul>`;
+    }
+  }
+
+  const safeNotes = escapeHtml(site.notes || "");
+
+  return `<!doctype html>
+  <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Survey report</title>
+  <style>
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 18px; color: #111;}
+    h1{margin:0 0 6px;}
+    .muted{opacity:.75;}
+    table{width:100%; border-collapse: collapse; margin: 14px 0;}
+    th,td{border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px; text-align: left;}
+    .totals{border: 1px solid rgba(0,0,0,.2); padding: 10px; border-radius: 12px;}
+    @media print { button{display:none;} }
+  </style>
+  </head><body>
+    <button onclick="window.print()">Print or Save as PDF</button>
+    <h1>Access control survey</h1>
+    <div class="muted">Created ${escapeHtml(created)} | Updated ${escapeHtml(updated)}</div>
+
+    <h3>Site</h3>
+    <div><b>Customer</b> ${escapeHtml(site.customer || "")}</div>
+    <div><b>Site</b> ${escapeHtml(site.siteName || "")}</div>
+    <div><b>Address</b> ${escapeHtml(site.address || "")}</div>
+    <div><b>Contact</b> ${escapeHtml(site.contactName || "")} ${escapeHtml(site.contactPhone || "")}</div>
+    <div><b>Notes</b> ${safeNotes}</div>
+
+    <h3>Door summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Door</th><th>Location</th><th>Recommendation</th><th>Lock</th><th>In or out</th><th>Labor hours</th><th>Est total</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="totals">
+      <b>Estimated site total</b> ${escapeHtml(toMoney(totalLow))} to ${escapeHtml(toMoney(totalHigh))}
+      <div class="muted small">Estimates are placeholders in this first version</div>
+    </div>
+
+    <h3>Assumptions and follow ups</h3>
+    ${needsHtml || "<div class='muted'>None recorded</div>"}
+
+  </body></html>`;
+}
+
+function route() {
+  const app = document.getElementById("app");
+  const title = document.getElementById("title");
+  const hash = location.hash || "#home";
+  const parts = hash.split("/");
+  const view = parts[0];
+
+  const data = loadData();
+
+  if (view === "#home") {
+    title.textContent = "Access Control Survey";
+    const sites = Object.values(data.sites).sort((a,b) => (b.updatedAt||"").localeCompare(a.updatedAt||""));
+    const items = sites.map(s => {
+      const doorCount = s.doors ? Object.keys(s.doors).length : 0;
+      return `
+        <div class="card">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <div><b>${escapeHtml(s.customer || "Untitled")}</b></div>
+              <div class="muted small">${escapeHtml(s.siteName || "")}</div>
+              <div class="muted small">${doorCount} doors</div>
+            </div>
+            <div class="row">
+              <button class="primary" onclick="location.hash='#site/${s.id}'">Open</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Start</h2>
+        <div class="row">
+          <button class="primary" onclick="newSite()">New site</button>
+          <button onclick="exportAll()">Export all data</button>
+          <button onclick="importData()">Import data</button>
+        </div>
+        <div class="muted small" style="margin-top:10px;">
+          Data is stored on this device. Export often.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Sites</h2>
+        ${items || "<div class='muted'>No sites yet</div>"}
+      </div>
+    `;
+    return;
+  }
+
+  if (view === "#site" && parts[1]) {
+    const siteId = parts[1];
+    const site = getSite(data, siteId);
+    if (!site) { location.hash = "#home"; return; }
+    title.textContent = site.customer ? site.customer : "Site";
+
+    const doors = Object.values(site.doors || {}).sort((a,b) => (a.doorId||"").localeCompare(b.doorId||""));
+    const doorCards = doors.map(d => {
+      const st = calcDoorStatus(d);
+      return `
+        <div class="card">
+          <div class="row" style="justify-content: space-between;">
+            <div>
+              <div><b>${escapeHtml(d.doorId || "Door")}</b> <span class="pill">${st.complete ? "Complete" : "Incomplete"}</span></div>
+              <div class="muted small">${escapeHtml(d.location || "")}</div>
+            </div>
+            <div class="row">
+              <button onclick="location.hash='#door/${siteId}/${d.id}'">Edit</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Site info</h2>
+        <div class="grid2">
+          <div>
+            <label>Customer</label>
+            <input value="${escapeHtml(site.customer||"")}" oninput="updateSiteField('${siteId}','customer',this.value)"/>
+          </div>
+          <div>
+            <label>Site name</label>
+            <input value="${escapeHtml(site.siteName||"")}" oninput="updateSiteField('${siteId}','siteName',this.value)"/>
+          </div>
+          <div>
+            <label>Address</label>
+            <input value="${escapeHtml(site.address||"")}" oninput="updateSiteField('${siteId}','address',this.value)"/>
+          </div>
+          <div>
+            <label>Contact</label>
+            <input value="${escapeHtml(site.contactName||"")}" oninput="updateSiteField('${siteId}','contactName',this.value)"/>
+          </div>
+          <div>
+            <label>Contact phone</label>
+            <input value="${escapeHtml(site.contactPhone||"")}" oninput="updateSiteField('${siteId}','contactPhone',this.value)"/>
+          </div>
+        </div>
+        <label>Notes</label>
+        <textarea oninput="updateSiteField('${siteId}','notes',this.value)">${escapeHtml(site.notes||"")}</textarea>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="primary" onclick="addDoor('${siteId}')">Add door</button>
+          <button onclick="location.hash='#summary/${siteId}'">Site summary</button>
+          <button onclick="exportSite('${siteId}')">Export site</button>
+          <button class="danger" onclick="deleteSite('${siteId}')">Delete site</button>
+          <button onclick="location.hash='#home'">Back</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Doors</h2>
+        ${doorCards || "<div class='muted'>No doors yet</div>"}
+      </div>
+    `;
+    return;
+  }
+
+  if (view === "#door" && parts[1] && parts[2]) {
+    const siteId = parts[1];
+    const doorId = parts[2];
+    const site = getSite(data, siteId);
+    if (!site || !site.doors || !site.doors[doorId]) { location.hash = "#site/" + siteId; return; }
+    const door = site.doors[doorId];
+
+    const st = calcDoorStatus(door);
+    const rec = calcDoorRecommendation(door);
+    const est = estimateDoor(door);
+
+    const photoHtml = (door.photos || []).map((p, idx) => `
+      <div class="photo">
+        <img src="${p.dataUrl}" alt="photo"/>
+        <div class="row" style="padding:8px; justify-content: space-between;">
+          <span class="small muted">${escapeHtml(p.label || "Photo")}</span>
+          <span class="small link" onclick="removePhoto('${siteId}','${doorId}',${idx})">Remove</span>
+        </div>
+      </div>
+    `).join("");
+
+    title.textContent = door.doorId ? ("Door " + door.doorId) : "Door";
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Door</h2>
+        <div class="grid2">
+          <div>
+            <label>Door ID</label>
+            <input value="${escapeHtml(door.doorId||"")}" oninput="updateDoorField('${siteId}','${doorId}','doorId',this.value)"/>
+          </div>
+          <div>
+            <label>Location label</label>
+            <input value="${escapeHtml(door.location||"")}" oninput="updateDoorField('${siteId}','${doorId}','location',this.value)"/>
+          </div>
+        </div>
+
+        <details open>
+          <summary>Door and frame</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${selectField("Interior or exterior","intExt",door.intExt,["interior","exterior"],siteId,doorId)}
+            ${selectField("Single or pair","singleOrPair",door.singleOrPair,["single","pair"],siteId,doorId)}
+            ${selectField("Door material","doorMaterial",door.doorMaterial,["hollow metal","aluminum storefront","wood","glass","other"],siteId,doorId)}
+            ${selectField("Frame material","frameMaterial",door.frameMaterial,["hollow metal","aluminum storefront","wood","other"],siteId,doorId)}
+            ${selectField("Swing","swing",door.swing,["inswing","outswing"],siteId,doorId)}
+            ${selectField("Handing","handing",door.handing,["LH","RH","LHR","RHR","unknown"],siteId,doorId)}
+            ${yesNoField("Closer present","closerPresent",door.closerPresent,siteId,doorId)}
+            ${yesNoField("Alignment issues","alignmentIssues",door.alignmentIssues,siteId,doorId)}
+          </div>
+          <label>Door thickness</label>
+          <input value="${escapeHtml(door.thickness||"")}" oninput="updateDoorField('${siteId}','${doorId}','thickness',this.value)" placeholder="Example 1 3/4"/>
+        </details>
+
+        <details>
+          <summary>Existing hardware</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${selectField("Lock type","lockType",door.lockType,["cylindrical","mortise","panic","deadbolt","other"],siteId,doorId)}
+            ${selectField("Latch status","latchStatus",door.latchStatus,["good","intermittent","failing","unknown"],siteId,doorId)}
+            ${selectField("Key system","keySystem",door.keySystem,["standard","IC core","unknown"],siteId,doorId)}
+            ${yesNoField("Existing keypad or smart lock","existingKeypad",door.existingKeypad,siteId,doorId)}
+          </div>
+          <label>Brand model notes</label>
+          <input value="${escapeHtml(door.brandModel||"")}" oninput="updateDoorField('${siteId}','${doorId}','brandModel',this.value)"/>
+        </details>
+
+        <details>
+          <summary>Power and connectivity</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${yesNoField("Power near door","powerNearDoor",door.powerNearDoor,siteId,doorId)}
+            ${selectField("Wire path","wirePath",door.wirePath,["drop ceiling","attic","conduit","none","unknown"],siteId,doorId)}
+            ${yesNoField("Wifi available","wifiAvailable",door.wifiAvailable,siteId,doorId)}
+            ${yesNoField("Cellular acceptable","cellularOk",door.cellularOk,siteId,doorId)}
+          </div>
+        </details>
+
+        <details>
+          <summary>Use case</summary>
+          <div class="grid2" style="margin-top:10px;">
+            <div>
+              <label>User count estimate</label>
+              <input value="${escapeHtml(door.userCount||"")}" oninput="updateDoorField('${siteId}','${doorId}','userCount',this.value)" inputmode="numeric"/>
+            </div>
+            ${yesNoField("Need schedules","needSchedules",door.needSchedules,siteId,doorId)}
+            ${yesNoField("Remote management","remoteMgmt",door.remoteMgmt,siteId,doorId)}
+            ${yesNoField("Audit trail","auditTrail",door.auditTrail,siteId,doorId)}
+            ${yesNoField("Temporary access","tempAccess",door.tempAccess,siteId,doorId)}
+          </div>
+        </details>
+
+        <details>
+          <summary>Code and life safety</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${yesNoUnknownField("Fire rated opening","fireRated",door.fireRated,siteId,doorId)}
+            ${yesNoUnknownField("Panic required","panicRequired",door.panicRequired,siteId,doorId)}
+            ${yesNoField("Free egress required","freeEgress",door.freeEgress,siteId,doorId)}
+            ${yesNoUnknownField("Maglock allowed","maglockAllowed",door.maglockAllowed,siteId,doorId)}
+          </div>
+        </details>
+
+        <details>
+          <summary>Photos</summary>
+          <div class="muted small" style="margin:10px 0;">Photos are stored on device and included in exports</div>
+          <div class="grid2">
+            <div>
+              <label>Photo label</label>
+              <input id="photoLabel" placeholder="Door face, edge, strike, closer"/>
+            </div>
+            <div>
+              <label>Capture</label>
+              <input type="file" accept="image/*" capture="environment" onchange="addPhoto('${siteId}','${doorId}', this.files[0])"/>
+            </div>
+          </div>
+          <div class="photoGrid" style="margin-top:10px;">
+            ${photoHtml || "<div class='muted'>No photos yet</div>"}
+          </div>
+        </details>
+
+        <div class="card" style="margin-top:12px;">
+          <h2>Recommendation</h2>
+          <div><b>Family</b> ${escapeHtml(rec.family)}</div>
+          <div class="muted small"><b>Reason</b> ${escapeHtml(rec.reason)}</div>
+          <div style="margin-top:10px;"><b>Estimate</b> ${escapeHtml(toMoney(est.totalLow))} to ${escapeHtml(toMoney(est.totalHigh))}</div>
+          <div class="muted small">Labor hours ${escapeHtml(String(est.laborHours))} | Labor ${escapeHtml(toMoney(est.labor))} | Parts ${escapeHtml(toMoney(est.partsLow))} to ${escapeHtml(toMoney(est.partsHigh))}</div>
+          <div style="margin-top:10px;">
+            <b>Notes</b>
+            ${rec.needs && rec.needs.length ? "<ul>" + rec.needs.map(n => "<li>"+escapeHtml(n)+"</li>").join("") + "</ul>" : "<div class='muted small'>None</div>"}
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <span class="pill">${st.complete ? "Door complete" : "Missing required fields"}</span>
+            ${!st.complete ? "<span class='muted small'>"+escapeHtml(st.missing.join(", "))+"</span>" : ""}
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button onclick="location.hash='#site/${siteId}'">Back</button>
+          <button onclick="duplicateDoor('${siteId}','${doorId}')">Duplicate door</button>
+          <button class="danger" onclick="deleteDoor('${siteId}','${doorId}')">Delete door</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (view === "#summary" && parts[1]) {
+    const siteId = parts[1];
+    const site = getSite(data, siteId);
+    if (!site) { location.hash = "#home"; return; }
+    title.textContent = "Site summary";
+
+    const doors = Object.values(site.doors || {});
+    let totalLow = 0;
+    let totalHigh = 0;
+    let issues = [];
+    const rows = doors.sort((a,b) => (a.doorId||"").localeCompare(b.doorId||"")).map(d => {
+      const st = calcDoorStatus(d);
+      const est = estimateDoor(d);
+      totalLow += est.totalLow;
+      totalHigh += est.totalHigh;
+      if (!st.complete) issues.push("Door " + (d.doorId || "") + " missing " + st.missing.join(", "));
+      return `
+        <tr>
+          <td>${escapeHtml(d.doorId || "")}</td>
+          <td>${escapeHtml(d.location || "")}</td>
+          <td>${escapeHtml(est.family)}</td>
+          <td>${escapeHtml(toMoney(est.totalLow))} to ${escapeHtml(toMoney(est.totalHigh))}</td>
+          <td>${st.complete ? "Yes" : "No"}</td>
+        </tr>
+      `;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Totals</h2>
+        <div><b>Estimated range</b> ${escapeHtml(toMoney(totalLow))} to ${escapeHtml(toMoney(totalHigh))}</div>
+        <div class="muted small">Estimates are placeholders in this first version</div>
+        <div class="row" style="margin-top:10px;">
+          <button class="primary" onclick="exportSite('${siteId}')">Export site</button>
+          <button onclick="downloadReport('${siteId}')">Download report</button>
+          <button onclick="location.hash='#site/${siteId}'">Back</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Door table</h2>
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px;">Door</th>
+              <th style="border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px;">Location</th>
+              <th style="border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px;">Recommendation</th>
+              <th style="border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px;">Estimate</th>
+              <th style="border: 1px solid rgba(0,0,0,.2); padding: 8px; font-size: 12px;">Complete</th>
+            </tr>
+          </thead>
+          <tbody>${rows || ""}</tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Issues</h2>
+        ${issues.length ? "<ul>" + issues.map(i => "<li>"+escapeHtml(i)+"</li>").join("") + "</ul>" : "<div class='muted'>None</div>"}
+      </div>
+    `;
+    return;
+  }
+
+  location.hash = "#home";
+}
+
+function selectField(labelText, key, value, options, siteId, doorId) {
+  const opts = ["", ...options].map(o => `<option value="${escapeHtml(o)}" ${value===o?"selected":""}>${escapeHtml(o || "Select")}</option>`).join("");
+  return `
+    <div>
+      <label>${escapeHtml(labelText)}</label>
+      <select onchange="updateDoorField('${siteId}','${doorId}','${key}',this.value)">${opts}</select>
+    </div>
+  `;
+}
+
+function yesNoField(labelText, key, value, siteId, doorId) {
+  return selectField(labelText, key, value, ["yes","no"], siteId, doorId);
+}
+
+function yesNoUnknownField(labelText, key, value, siteId, doorId) {
+  return selectField(labelText, key, value, ["yes","no","unknown"], siteId, doorId);
+}
+
+window.newSite = function() {
+  const data = loadData();
+  const id = uid();
+  data.sites[id] = {
+    id,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    customer: "",
+    siteName: "",
+    address: "",
+    contactName: "",
+    contactPhone: "",
+    notes: "",
+    doors: {}
+  };
+  saveData(data);
+  location.hash = "#site/" + id;
+};
+
+window.updateSiteField = function(siteId, key, value) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site) return;
+  site[key] = value;
+  site.updatedAt = nowIso();
+  saveData(data);
+};
+
+window.addDoor = function(siteId) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site) return;
+  const id = uid();
+  site.doors[id] = {
+    id,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    doorId: "",
+    location: "",
+    intExt: "",
+    singleOrPair: "",
+    doorMaterial: "",
+    frameMaterial: "",
+    swing: "",
+    handing: "",
+    thickness: "",
+    closerPresent: "",
+    alignmentIssues: "",
+    lockType: "",
+    latchStatus: "",
+    keySystem: "",
+    existingKeypad: "",
+    brandModel: "",
+    powerNearDoor: "",
+    wirePath: "",
+    wifiAvailable: "",
+    cellularOk: "",
+    userCount: "",
+    needSchedules: "",
+    remoteMgmt: "",
+    auditTrail: "",
+    tempAccess: "",
+    fireRated: "",
+    panicRequired: "",
+    freeEgress: "",
+    maglockAllowed: "",
+    photos: []
+  };
+  site.updatedAt = nowIso();
+  saveData(data);
+  location.hash = "#door/" + siteId + "/" + id;
+};
+
+window.updateDoorField = function(siteId, doorId, key, value) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site || !site.doors || !site.doors[doorId]) return;
+  site.doors[doorId][key] = value;
+  site.doors[doorId].updatedAt = nowIso();
+  site.updatedAt = nowIso();
+  saveData(data);
+};
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(new Error("file read failed"));
+    r.readAsDataURL(file);
+  });
+}
+
+async function resizeImageDataUrl(dataUrl, maxDim) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const w = img.width;
+      const h = img.height;
+      const scale = Math.min(1, maxDim / Math.max(w, h));
+      const nw = Math.max(1, Math.round(w * scale));
+      const nh = Math.max(1, Math.round(h * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = nw;
+      canvas.height = nh;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, nw, nh);
+      const out = canvas.toDataURL("image/jpeg", 0.72);
+      resolve(out);
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+window.addPhoto = async function(siteId, doorId, file) {
+  if (!file) return;
+  const labelEl = document.getElementById("photoLabel");
+  const label = labelEl ? labelEl.value : "";
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site || !site.doors || !site.doors[doorId]) return;
+
+  const raw = await readFileAsDataUrl(file);
+  const resized = await resizeImageDataUrl(raw, 1400);
+
+  site.doors[doorId].photos = site.doors[doorId].photos || [];
+  site.doors[doorId].photos.push({ label: label || "Photo", dataUrl: resized, createdAt: nowIso() });
+  site.updatedAt = nowIso();
+  site.doors[doorId].updatedAt = nowIso();
+  saveData(data);
+  route();
+};
+
+window.removePhoto = function(siteId, doorId, idx) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site || !site.doors || !site.doors[doorId] || !site.doors[doorId].photos) return;
+  site.doors[doorId].photos.splice(idx, 1);
+  site.updatedAt = nowIso();
+  site.doors[doorId].updatedAt = nowIso();
+  saveData(data);
+  route();
+};
+
+window.deleteDoor = function(siteId, doorId) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site || !site.doors || !site.doors[doorId]) return;
+  delete site.doors[doorId];
+  site.updatedAt = nowIso();
+  saveData(data);
+  location.hash = "#site/" + siteId;
+};
+
+window.duplicateDoor = function(siteId, doorId) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site || !site.doors || !site.doors[doorId]) return;
+  const src = site.doors[doorId];
+  const id = uid();
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.id = id;
+  copy.createdAt = nowIso();
+  copy.updatedAt = nowIso();
+  copy.doorId = "";
+  copy.location = "";
+  site.doors[id] = copy;
+  site.updatedAt = nowIso();
+  saveData(data);
+  location.hash = "#door/" + siteId + "/" + id;
+};
+
+window.deleteSite = function(siteId) {
+  const data = loadData();
+  if (!data.sites[siteId]) return;
+  delete data.sites[siteId];
+  saveData(data);
+  location.hash = "#home";
+};
+
+window.exportAll = function() {
+  const data = loadData();
+  downloadTextFile("acs_export_all.json", JSON.stringify(data, null, 2), "application/json");
+};
+
+window.exportSite = function(siteId) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site) return;
+  const payload = { sites: { [siteId]: site } };
+  const safeName = (site.customer || "site").replaceAll(" ","_");
+  downloadTextFile("acs_export_" + safeName + ".json", JSON.stringify(payload, null, 2), "application/json");
+};
+
+window.downloadReport = function(siteId) {
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if (!site) return;
+  const html = buildReportHtml(site);
+  const safeName = (site.customer || "site").replaceAll(" ","_");
+  downloadTextFile("acs_report_" + safeName + ".html", html, "text/html");
+};
+
+window.importData = function() {
+  const inp = document.createElement("input");
+  inp.type = "file";
+  inp.accept = "application/json";
+  inp.onchange = async () => {
+    const file = inp.files && inp.files[0];
+    if (!file) return;
+    const text = await file.text();
+    let incoming = null;
+    try { incoming = JSON.parse(text); } catch { alert("Import failed"); return; }
+    if (!incoming || !incoming.sites) { alert("Invalid file"); return; }
+
+    const data = loadData();
+    for (const [id, site] of Object.entries(incoming.sites)) {
+      data.sites[id] = site;
+    }
+    saveData(data);
+    location.hash = "#home";
+    route();
+  };
+  inp.click();
+};
+
+window.addEventListener("hashchange", route);
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
+}
+
+route();
+</script>
+</body>
+</html>
