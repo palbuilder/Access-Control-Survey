@@ -1,10 +1,10 @@
 {
-  "name": "Access Control Survey",
-  "short_name": "ACS",
+  "name": "Pop A Lock Access Control Survey",
+  "short_name": "PAL ACS",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#ec5628",
   "icons": [
     {
       "src": "icon_192.png",
