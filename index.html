@@ -1,77 +1,173 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Pop A Lock Access Control Survey</title>
-<meta name="theme-color" content="#ec5628"/>
-<link rel="manifest" href="./manifest.json"/>
-<style>
-:root{
-  --accent:#ec5628;
-  --bg:#ffffff;
-  --text:#111111;
-  --muted:rgba(0,0,0,.65);
-  --border:1px solid rgba(0,0,0,.16);
-  --pad:14px;
-  --radius:16px;
-}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--text);}
-header{position:sticky;top:0;background:var(--bg);border-bottom:var(--border);padding:12px var(--pad);z-index:10;}
-main{padding:var(--pad);max-width:980px;margin:0 auto;}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.brand{display:flex;align-items:center;gap:12px;min-width:0;}
-.brand img{height:28px;width:auto;display:block;}
-.brand .title{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:var(--border);font-size:12px;}
-.pill.accent{border-color:rgba(236,86,40,.55);}
-.card{border:var(--border);border-radius:var(--radius);padding:var(--pad);margin:12px 0;}
-.card h2{margin:0 0 10px;font-size:16px;}
-label{display:block;font-size:12px;margin:10px 0 4px;opacity:.9;}
-input,select,textarea{width:100%;padding:10px;border:var(--border);border-radius:12px;font-size:14px;background:#fff;color:var(--text);}
-textarea{min-height:80px;resize:vertical;}
-button{padding:10px 12px;border:1px solid rgba(0,0,0,.18);border-radius:12px;background:#fff;font-size:14px;}
-button.primary{border-color:rgba(236,86,40,.65);box-shadow:0 0 0 1px rgba(236,86,40,.2) inset;font-weight:650;}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.muted{color:var(--muted);}
-.small{font-size:12px;}
-.grid2{display:grid;grid-template-columns:1fr;gap:10px;}
-@media (min-width:720px){.grid2{grid-template-columns:1fr 1fr;}}
-details{border:var(--border);border-radius:var(--radius);padding:10px 12px;}
-summary{cursor:pointer;font-weight:700;}
-.radioRow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:6px;}
-.radioRow label{margin:0;font-size:14px;display:flex;gap:8px;align-items:center;}
-.helpIcon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;border:var(--border);font-size:12px;cursor:pointer;margin-left:8px;}
-.modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;}
-.modal{background:#fff;border-radius:18px;max-width:900px;width:100%;max-height:92vh;overflow:auto;border:var(--border);padding:14px;}
-.modalHeader{display:flex;justify-content:space-between;align-items:center;gap:10px;}
-.modalHeader h3{margin:0;font-size:16px;}
-.modal img{width:100%;height:auto;border:var(--border);border-radius:14px;margin-top:12px;}
-.photoGrid{display:grid;grid-template-columns:1fr;gap:10px;}
-@media (min-width:720px){.photoGrid{grid-template-columns:1fr 1fr;}}
-.photoSlot{border:var(--border);border-radius:14px;padding:10px;}
-.photoSlot img{width:100%;height:150px;object-fit:cover;border-radius:12px;border:var(--border);display:block;}
-.thumbPair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
-.thumbPair img{width:100%;height:84px;object-fit:cover;border-radius:12px;border:var(--border);}
-.warnBox{border:1px solid rgba(236,86,40,.55);border-radius:14px;padding:10px;}
-.fractionHelp{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
-.chip{border:var(--border);border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer;user-select:none;}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pop A Lock Access Control Survey</title>
+  <meta name="theme-color" content="#ec5628"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <style>
+    :root{
+      --accent:#ec5628;
+      --bg:#ffffff;
+      --card:#ffffff;
+      --text:#111111;
+      --muted:rgba(0,0,0,.72);
+      --border:1px solid rgba(0,0,0,.20);
+      --borderStrong:1px solid rgba(0,0,0,.32);
+      --inputBg:#ffffff;
+      --pad:16px;
+      --radius:18px;
+      --fontBase:17px;
+      --fontSmall:13px;
+      --fontH2:19px;
+      --shadow:0 1px 0 rgba(0,0,0,.04);
+    }
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0b0f;
+        --card:#12121a;
+        --text:#f2f2f4;
+        --muted:rgba(242,242,244,.72);
+        --border:1px solid rgba(242,242,244,.16);
+        --borderStrong:1px solid rgba(242,242,244,.28);
+        --inputBg:#0f0f16;
+        --shadow:0 1px 0 rgba(0,0,0,.35);
+      }
+    }
+
+    body.force-light{
+      --bg:#ffffff;
+      --card:#ffffff;
+      --text:#111111;
+      --muted:rgba(0,0,0,.72);
+      --border:1px solid rgba(0,0,0,.20);
+      --borderStrong:1px solid rgba(0,0,0,.32);
+      --inputBg:#ffffff;
+      --shadow:0 1px 0 rgba(0,0,0,.04);
+    }
+    body.force-dark{
+      --bg:#0b0b0f;
+      --card:#12121a;
+      --text:#f2f2f4;
+      --muted:rgba(242,242,244,.72);
+      --border:1px solid rgba(242,242,244,.16);
+      --borderStrong:1px solid rgba(242,242,244,.28);
+      --inputBg:#0f0f16;
+      --shadow:0 1px 0 rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-size:var(--fontBase);
+    }
+    header{
+      position:sticky;
+      top:0;
+      background:var(--bg);
+      border-bottom:var(--border);
+      padding:12px var(--pad);
+      z-index:10;
+      backdrop-filter:saturate(1.2);
+    }
+    main{padding:var(--pad);max-width:980px;margin:0 auto;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0;}
+    .brand img{height:30px;width:auto;display:block;}
+    .brand .title{font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px;}
+    .pill{display:inline-block;padding:7px 11px;border-radius:999px;border:var(--borderStrong);font-size:12px;font-weight:800;}
+    .pill.accent{border-color:rgba(236,86,40,.7);}
+    .card{
+      border:var(--border);
+      border-radius:var(--radius);
+      padding:var(--pad);
+      margin:12px 0;
+      background:var(--card);
+      box-shadow:var(--shadow);
+    }
+    .card h2{margin:0 0 10px;font-size:var(--fontH2);font-weight:900;letter-spacing:.2px;}
+    label{display:block;font-size:var(--fontSmall);margin:10px 0 6px;opacity:.95;font-weight:850;}
+    .req::after{content:" *";color:var(--accent);font-weight:900;}
+    input,select,textarea{
+      width:100%;
+      padding:12px 12px;
+      border:var(--borderStrong);
+      border-radius:14px;
+      font-size:16px;
+      background:var(--inputBg);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 2px rgba(236,86,40,.28);border-color:rgba(236,86,40,.65);}
+    textarea{min-height:92px;resize:vertical;}
+    button{
+      padding:12px 14px;
+      border:var(--borderStrong);
+      border-radius:14px;
+      background:var(--card);
+      color:var(--text);
+      font-size:16px;
+      font-weight:900;
+    }
+    button.primary{
+      border-color:rgba(236,86,40,.75);
+      box-shadow:0 0 0 1px rgba(236,86,40,.20) inset;
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .muted{color:var(--muted);}
+    .small{font-size:var(--fontSmall);}
+    .grid2{display:grid;grid-template-columns:1fr;gap:12px;}
+    @media (min-width:720px){.grid2{grid-template-columns:1fr 1fr;}}
+    details{
+      border:var(--border);
+      border-radius:var(--radius);
+      padding:12px 14px;
+      background:rgba(0,0,0,0);
+    }
+    summary{cursor:pointer;font-weight:900;letter-spacing:.2px;}
+    .radioRow{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:8px;}
+    .radioRow label{margin:0;font-size:16px;display:flex;gap:10px;align-items:center;font-weight:900;}
+    .radioRow input[type="radio"]{width:22px;height:22px;}
+    .helpIcon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;border:var(--borderStrong);font-size:12px;cursor:pointer;margin-left:8px;font-weight:900;}
+    .modalBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;}
+    .modal{background:var(--card);color:var(--text);border-radius:18px;max-width:900px;width:100%;max-height:92vh;overflow:auto;border:var(--borderStrong);padding:14px;}
+    .modalHeader{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    .modalHeader h3{margin:0;font-size:16px;font-weight:900;}
+    .modal img{width:100%;height:auto;border:var(--border);border-radius:14px;margin-top:12px;}
+    .photoGrid{display:grid;grid-template-columns:1fr;gap:12px;}
+    @media (min-width:720px){.photoGrid{grid-template-columns:1fr 1fr;}}
+    .photoSlot{border:var(--border);border-radius:14px;padding:12px;background:rgba(0,0,0,0);}
+    .photoSlot img{width:100%;height:160px;object-fit:cover;border-radius:12px;border:var(--borderStrong);display:block;}
+    .thumbPair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+    .thumbPair img{width:100%;height:90px;object-fit:cover;border-radius:12px;border:var(--borderStrong);}
+    .warnBox{border:1px solid rgba(236,86,40,.7);border-radius:14px;padding:12px;}
+    .fractionHelp{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+    .chip{border:var(--borderStrong);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;user-select:none;font-weight:900;}
+    .note{border-left:4px solid rgba(236,86,40,.75);padding:10px 12px;border-radius:12px;background:rgba(236,86,40,.08);}
+  </style>
 </head>
 <body>
-<header>
-  <div class="topbar">
-    <div class="brand">
-      <img src="./pal_logo.png" alt="Pop A Lock"/>
-      <div class="title">Access Control Survey</div>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <img src="./pal_logo.png" alt="Pop A Lock"/>
+        <div class="title">Access Control Survey</div>
+      </div>
+      <span class="pill accent">Offline ready</span>
     </div>
-    <span class="pill accent">Offline ready</span>
-  </div>
-</header>
-<main id="app"></main>
+  </header>
+
+  <main id="app"></main>
 
 <script>
-const storeKey = "pal_acs_data_v2";
+const storeKey = "pal_acs_data_v3";
+const themeKey = "pal_acs_theme_override_v3";
 
 function uid(){return Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2);}
 function nowIso(){return new Date().toISOString();}
@@ -88,9 +184,17 @@ function loadData(){
 function saveData(data){localStorage.setItem(storeKey, JSON.stringify(data));}
 function getSite(data, siteId){return data.sites[siteId] || null;}
 
+function applyTheme(){
+  const v = localStorage.getItem(themeKey) || "";
+  document.body.classList.remove("force-dark","force-light");
+  if(v === "dark") document.body.classList.add("force-dark");
+  if(v === "light") document.body.classList.add("force-light");
+}
+
 function escapeHtml(s){
   return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
 }
+
 function downloadTextFile(filename, text, mime){
   const blob = new Blob([text], {type: mime || "text/plain"});
   const url = URL.createObjectURL(blob);
@@ -99,19 +203,35 @@ function downloadTextFile(filename, text, mime){
   document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
 }
+
 function makeTitleCase(s){
   if(!s) return "";
   return s.split(" ").map(w => w ? (w[0].toUpperCase() + w.slice(1)) : "").join(" ");
 }
+
 function normalizeFractionInput(raw){
   const s = String(raw||"").trim();
   if(!s) return "";
   const m = s.match(/^(\d+)\s+(\d+)\s+(\d+)$/);
-  if(m) return `${m[1]} ${m[2]}/${m[3]}`;
+  if(m){
+    return `${m[1]} ${m[2]}/${m[3]}`;
+  }
   const m2 = s.match(/^(\d+)\s+(\d+)$/);
-  if(m2) return `${m2[1]}/${m2[2]}`;
+  if(m2){
+    return `${m2[1]}/${m2[2]}`;
+  }
   return s;
 }
+
+function modal(html){
+  const backdrop = document.createElement("div");
+  backdrop.className = "modalBackdrop";
+  backdrop.innerHTML = `<div class="modal">${html}</div>`;
+  backdrop.addEventListener("click", (e)=>{ if(e.target===backdrop) backdrop.remove(); });
+  document.body.appendChild(backdrop);
+  return backdrop;
+}
+
 function setPath(obj, path, value){
   const parts = path.split(".");
   let cur = obj;
@@ -123,30 +243,150 @@ function setPath(obj, path, value){
   cur[parts[parts.length-1]] = value;
 }
 
+function getPath(obj, path){
+  const parts = path.split(".");
+  let cur = obj;
+  for(const k of parts){
+    if(cur==null) return undefined;
+    cur = cur[k];
+  }
+  return cur;
+}
+
+function requiredLabel(text){
+  return `<span class="req">${escapeHtml(text)}</span>`;
+}
+
+function radioOptions(labelText, key, value, opts, onChange, required){
+  const radios = opts.map(v=>{
+    const checked = value===v ? "checked" : "";
+    const lab = makeTitleCase(v);
+    return `<label><input type="radio" name="${escapeHtml(key)}" value="${escapeHtml(v)}" ${checked} onchange="${onChange}"/>${escapeHtml(lab)}</label>`;
+  }).join("");
+  return `
+    <div>
+      <label>${required ? requiredLabel(labelText) : escapeHtml(labelText)}</label>
+      <div class="radioRow">${radios}</div>
+    </div>
+  `;
+}
+
+function selectField(labelText, key, value, options, onChange, required){
+  const opts = ["", ...options].map(o => {
+    const label = o ? makeTitleCase(o) : "Select";
+    return `<option value="${escapeHtml(o)}" ${value===o?"selected":""}>${escapeHtml(label)}</option>`;
+  }).join("");
+  return `
+    <div>
+      <label>${required ? requiredLabel(labelText) : escapeHtml(labelText)}</label>
+      <select onchange="${onChange}">${opts}</select>
+    </div>
+  `;
+}
+
+function fractionField(labelText, siteId, doorId, path, value, placeholder, required){
+  const id = "f_" + uid();
+  const common = ["1/8","1/4","3/8","1/2","5/8","3/4","7/8"];
+  const chips = common.map(c=>`<span class="chip" onclick="appendFraction('${id}','${c}')">${c}</span>`).join("");
+  return `
+    <div>
+      <label>${required ? requiredLabel(labelText) : escapeHtml(labelText)}</label>
+      <input id="${id}" value="${escapeHtml(value||"")}" placeholder="${escapeHtml(placeholder||"")}"
+        onblur="normalizeFraction('${id}','${siteId}','${doorId}','${path}')"
+        oninput="updateDoorField('${siteId}','${doorId}','${path}', this.value)"/>
+      <div class="muted small">Type 2 3 4 to get 2 3/4</div>
+      <div class="fractionHelp">${chips}</div>
+    </div>
+  `;
+}
+
+function textWithSuggestions(labelText, required, siteId, doorId, fieldPath, value, suggestions){
+  const listId = "list_" + uid();
+  const options = (suggestions||[]).filter(Boolean).map(s=>`<option value="${escapeHtml(s)}"></option>`).join("");
+  return `
+    <div>
+      <label>${required ? requiredLabel(labelText) : escapeHtml(labelText)}</label>
+      <input list="${listId}" value="${escapeHtml(value||"")}" oninput="updateDoorField('${siteId}','${doorId}','${fieldPath}', this.value)"/>
+      <datalist id="${listId}">${options}</datalist>
+    </div>
+  `;
+}
+
+function getDoorSuggestions(site){
+  const buckets = {
+    interiorHardware: new Set(),
+    exitTrim: new Set(),
+    doorCloserModelNumbers: new Set(),
+    exteriorTrimType: new Set()
+  };
+  const doors = Object.values(site.doors||{});
+  for(const d of doors){
+    if(d.interiorHardware) buckets.interiorHardware.add(d.interiorHardware.trim());
+    if(d.exitTrim) buckets.exitTrim.add(d.exitTrim.trim());
+    if(d.doorCloserModelNumbers) buckets.doorCloserModelNumbers.add(d.doorCloserModelNumbers.trim());
+    if(d.exteriorTrimType) buckets.exteriorTrimType.add(d.exteriorTrimType.trim());
+  }
+  return {
+    interiorHardware: Array.from(buckets.interiorHardware).sort(),
+    exitTrim: Array.from(buckets.exitTrim).sort(),
+    doorCloserModelNumbers: Array.from(buckets.doorCloserModelNumbers).sort(),
+    exteriorTrimType: Array.from(buckets.exteriorTrimType).sort()
+  };
+}
+
+function getBestThumbnailDoor(site){
+  const doors = Object.values(site.doors||{});
+  const withBoth = doors.filter(d=>{
+    const p = d.photos||{};
+    return p.photo_inside_closed?.dataUrl && p.photo_outside_closed?.dataUrl;
+  }).sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
+  if(withBoth.length) return withBoth[0];
+
+  const withOne = doors.filter(d=>{
+    const p = d.photos||{};
+    return p.photo_inside_closed?.dataUrl || p.photo_outside_closed?.dataUrl;
+  }).sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
+  if(withOne.length) return withOne[0];
+  return null;
+}
+
 function calcDoorStatus(door){
-  const required = ["doorId","location","intExt","doorType","doorMaterial","frameMaterial","swing","handing","lockType","wifiStrength","wirePath","powerNearDoor","panicRequired","freeEgress"];
-  const missing = required.filter(k => !(door[k] && String(door[k]).trim().length));
+  const requiredFields = ["doorId","location","intExt","swing","doorType","doorMaterial","frameMaterial","handing","lockType","powerNearDoor","wifiStrength","panicRequired","freeEgress"];
+  const missing = requiredFields.filter(k => !(door[k] && String(door[k]).trim().length));
+
+  const wr = door.wireRoutingOptions || [];
+  if(!Array.isArray(wr) || wr.length===0) missing.push("wireRoutingOptions");
+
   const photoReq = ["photo_outside_closed","photo_inside_closed","photo_edge","photo_strike"];
   const missingPhotos = photoReq.filter(k => !(door.photos && door.photos[k] && door.photos[k].dataUrl));
+
   return {complete: missing.length===0 && missingPhotos.length===0, missing, missingPhotos};
 }
 
 function buildReportHtml(site){
   const created = site.createdAt ? new Date(site.createdAt).toLocaleString() : "";
   const updated = site.updatedAt ? new Date(site.updatedAt).toLocaleString() : "";
+
   const creds = (site.credentials || []).join(", ");
   const goals = [];
   if(site.goalRemoteMgmt==="yes") goals.push("Remote management");
   if(site.goalAudit==="yes") goals.push("Audit trail");
   if(site.goalCloudOk==="yes") goals.push("Open to cloud subscription");
-  if(site.goalLocalOnly==="yes") goals.push("Local only management");
   if(site.goalWeManageSoftware==="yes") goals.push("Wants us to manage software monthly");
   const goalsText = goals.length ? goals.join(", ") : "None recorded";
 
   const doors = Object.values(site.doors||{}).sort((a,b)=>(a.doorId||"").localeCompare(b.doorId||""));
+
   const rows = doors.map(d=>{
     const st = calcDoorStatus(d);
-    return `<tr><td>${escapeHtml(d.doorId||"")}</td><td>${escapeHtml(d.location||"")}</td><td>${escapeHtml(makeTitleCase(d.intExt||""))}</td><td>${escapeHtml(makeTitleCase(d.doorType||""))}</td><td>${escapeHtml(makeTitleCase(d.lockType||""))}</td><td>${st.complete ? "Yes" : "No"}</td></tr>`;
+    return `<tr>
+      <td>${escapeHtml(d.doorId||"")}</td>
+      <td>${escapeHtml(d.location||"")}</td>
+      <td>${escapeHtml(makeTitleCase(d.intExt||""))}</td>
+      <td>${escapeHtml(makeTitleCase(d.doorType||""))}</td>
+      <td>${escapeHtml(makeTitleCase(d.lockType||""))}</td>
+      <td>${st.complete ? "Yes" : "No"}</td>
+    </tr>`;
   }).join("");
 
   const doorDetails = doors.map(d=>{
@@ -163,35 +403,33 @@ function buildReportHtml(site){
       ["Interior trim", photos.photo_interior_trim],
       ["Hardware model numbers", photos.photo_model_numbers],
       ["Key photo", photos.photo_key],
-      ["Extras on door", photos.photo_extras]
+      ["Extras on door", photos.photo_extras],
+      ["Door fire label", photos.photo_fire_door_label],
+      ["Frame fire label", photos.photo_fire_frame_label],
+      ["Firewall label", photos.photo_fire_wall_label]
     ];
-    const photoHtml = photoItems.filter(([label,obj])=>obj && obj.dataUrl).map(([label,obj])=>`
-      <div style="margin:10px 0;">
+
+    const photoHtml = photoItems
+      .filter(([label, obj]) => obj && obj.dataUrl)
+      .map(([label, obj]) => `<div style="margin:10px 0;">
         <div style="font-size:12px;opacity:.75;margin-bottom:6px;">${escapeHtml(label)}</div>
         <img src="${obj.dataUrl}" style="width:100%;max-width:520px;border:1px solid rgba(0,0,0,.2);border-radius:12px;" />
       </div>`).join("");
 
     const frameSketch = d.frameSketch || {};
-    const frameRef = frameSketch.ref || "";
     const frameFields = ["A","B","C","D","E","F"].map(k=>{
       const v = frameSketch[k] || "";
       return v ? `<div><b>${k}</b> ${escapeHtml(v)}</div>` : "";
     }).join("");
 
     const meas = d.measurements || {};
-    const measLine = (label,val)=> val ? `<div><b>${escapeHtml(label)}</b> ${escapeHtml(val)}</div>` : "";
+    function line(label, val){
+      if(!val) return "";
+      return `<div><b>${escapeHtml(label)}</b> ${escapeHtml(val)}</div>`;
+    }
+
     const fire = d.fire || {};
-    const fireBlock = `
-      <div><b>Fire rated opening</b> ${escapeHtml(fire.isRated||"")}</div>
-      ${measLine("Door label text", fire.doorLabelText||"")}
-      ${measLine("Frame label text", fire.frameLabelText||"")}
-      ${measLine("Firewall label text", fire.firewallLabelText||"")}
-      ${measLine("Rating hours", fire.ratingHours||"")}
-      <div><b>Hardware fire rated</b> ${escapeHtml(fire.hardwareRated||"")}</div>
-      <div><b>Fire panel present</b> ${escapeHtml(fire.firePanel||"")}</div>
-      <div><b>Sprinklers present</b> ${escapeHtml(fire.sprinklers||"")}</div>
-      <div><b>Needs tie in</b> ${escapeHtml(fire.tieIn||"")}</div>
-    `;
+    const wire = (d.wireRoutingOptions||[]).join(", ");
 
     return `
       <div style="page-break-inside:avoid;border:1px solid rgba(0,0,0,.2);border-radius:14px;padding:12px;margin:14px 0;">
@@ -200,48 +438,50 @@ function buildReportHtml(site){
 
         <h4 style="margin:12px 0 6px;">Door and frame</h4>
         <div><b>Interior or exterior</b> ${escapeHtml(d.intExt||"")}</div>
+        <div><b>Swing</b> ${escapeHtml(d.swing||"")}</div>
         <div><b>Door type</b> ${escapeHtml(d.doorType||"")}</div>
         ${d.doorType==="double no mullion" ? `<div><b>Astragal present</b> ${escapeHtml(d.astragal||"")}</div><div><b>Active leaf</b> ${escapeHtml(d.activeLeaf||"")}</div>` : ""}
         <div><b>Door material</b> ${escapeHtml(d.doorMaterial||"")}</div>
         <div><b>Frame material</b> ${escapeHtml(d.frameMaterial||"")}</div>
-        <div><b>Swing</b> ${escapeHtml(d.swing||"")}</div>
         <div><b>Handing</b> ${escapeHtml(d.handing||"")}</div>
         <div><b>Door thickness</b> ${escapeHtml(d.doorThickness||"")}</div>
-        <div><b>Closer present</b> ${escapeHtml(d.closerPresent||"")}</div>
-        ${d.closerPresent==="yes" ? `<div><b>Closer model</b> ${escapeHtml(d.closerModel||"")}</div>` : ""}
+        <div><b>Door closer present</b> ${escapeHtml(d.closerPresent||"")}</div>
         <div><b>Alignment issues</b> ${escapeHtml(d.alignmentIssues||"")}</div>
         ${d.alignmentIssues==="yes" ? `<div><b>Alignment notes</b> ${escapeHtml(d.alignmentNotes||"")}</div>` : ""}
         <div><b>Exterior keypad mount construction</b> ${escapeHtml(d.exteriorKeypadConstruction||"")}</div>
         <div><b>Interior push to exit mount construction</b> ${escapeHtml(d.interiorPteConstruction||"")}</div>
 
         <h4 style="margin:12px 0 6px;">Measurements</h4>
-        ${measLine("Door width", meas.doorWidth)}
-        ${measLine("Opening width", meas.openingWidth)}
-        ${measLine("Frame width", meas.frameWidth)}
-        ${measLine("Door height", meas.doorHeight)}
-        ${measLine("Door stile thickness", meas.doorStileThickness)}
-        ${measLine("Backset", d.backset)}
-        ${measLine("Centerline from floor", meas.centerlineFromFloor)}
-        ${measLine("Weather blade or jamb notes", meas.weatherNotes)}
-        ${measLine("Gap between door and frame", d.doorFrameGap)}
+        ${line("Door width", meas.doorWidth)}
+        ${line("Opening width", meas.openingWidth)}
+        ${line("Frame width", meas.frameWidth)}
+        ${line("Door height", meas.doorHeight)}
+        ${line("Door stile thickness", meas.doorStileThickness)}
+        ${line("Backset", d.backset)}
+        ${line("Centerline from floor", meas.centerlineFromFloor)}
+        ${line("Weather blade or jamb notes", meas.weatherNotes)}
+        ${line("Gap between door and frame", d.doorFrameGap)}
 
         <h4 style="margin:12px 0 6px;">Frame sketch</h4>
-        <div><b>Reference</b> ${escapeHtml(frameRef||"")}</div>
         ${frameFields ? `<div>${frameFields}</div>` : `<div style="opacity:.75;">None recorded</div>`}
 
         <h4 style="margin:12px 0 6px;">Existing hardware</h4>
         <div><b>Lock type</b> ${escapeHtml(d.lockType||"")}</div>
         <div><b>Exterior trim type</b> ${escapeHtml(d.exteriorTrimType||"")}</div>
+        <div><b>Interior hardware</b> ${escapeHtml(d.interiorHardware||"")}</div>
+        <div><b>Exit trim</b> ${escapeHtml(d.exitTrim||"")}</div>
+        <div><b>Door closer model numbers</b> ${escapeHtml(d.doorCloserModelNumbers||"")}</div>
         <div><b>Key blank</b> ${escapeHtml(d.keyBlank||"")}</div>
-        <div><b>Hinge type</b> ${escapeHtml(d.hingeType||"")}</div>
-        <div><b>Hinge count</b> ${escapeHtml(d.hingeCount||"")}</div>
-        <div><b>Other items on door</b> ${escapeHtml(d.otherItemsOnDoor||"")}</div>
+        <div><b>Backset</b> ${escapeHtml(d.backset||"")}</div>
         <div><b>Function</b> ${escapeHtml(d.functionCurrent||"")}</div>
         <div><b>Change function to</b> ${escapeHtml(d.functionChangeTo||"")}</div>
+        <div><b>Gap between door and frame</b> ${escapeHtml(d.doorFrameGap||"")}</div>
+        <div><b>Hinge type</b> ${escapeHtml(d.hingeType||"")}</div>
+        <div><b>Other items on door</b> ${escapeHtml(d.otherItemsOnDoor||"")}</div>
 
         <h4 style="margin:12px 0 6px;">Power and connectivity</h4>
         <div><b>Power near door</b> ${escapeHtml(d.powerNearDoor||"")}</div>
-        <div><b>Wire path</b> ${escapeHtml(d.wirePath||"")}</div>
+        <div><b>Wire routing options</b> ${escapeHtml(wire||"")}</div>
         <div><b>Wifi strength</b> ${escapeHtml(d.wifiStrength||"")}</div>
         <div><b>Notes</b> ${escapeHtml(d.powerNotes||"")}</div>
 
@@ -257,7 +497,13 @@ function buildReportHtml(site){
         <div><b>Panic required</b> ${escapeHtml(d.panicRequired||"")}</div>
         <div><b>Free egress required</b> ${escapeHtml(d.freeEgress||"")}</div>
         <div><b>Maglock allowed</b> ${escapeHtml(d.maglockAllowed||"")}</div>
-        ${fireBlock}
+
+        <h4 style="margin:12px 0 6px;">Fire rating</h4>
+        <div><b>Fire rated opening</b> ${escapeHtml(fire.isRated||"")}</div>
+        <div><b>Rating hours</b> ${escapeHtml(fire.ratingHours||"")}</div>
+        <div><b>Hardware fire rated</b> ${escapeHtml(fire.hardwareRated||"")}</div>
+        <div><b>Fire panel present</b> ${escapeHtml(fire.firePanel||"")}</div>
+        <div><b>Sprinklers present</b> ${escapeHtml(fire.sprinklers||"")}</div>
 
         <h4 style="margin:12px 0 6px;">Photos</h4>
         ${photoHtml || `<div style="opacity:.75;">No photos attached</div>`}
@@ -267,7 +513,8 @@ function buildReportHtml(site){
           <div style="font-size:12px;opacity:.75;margin-top:6px;">Missing fields: ${escapeHtml(st.missing.join(", "))}</div>
           <div style="font-size:12px;opacity:.75;margin-top:6px;">Missing photos: ${escapeHtml(st.missingPhotos.join(", "))}</div>
         </div>` : ""}
-      </div>`;
+      </div>
+    `;
   }).join("");
 
   const existingSystem = site.existingSystemPresent==="yes" ? `
@@ -275,88 +522,75 @@ function buildReportHtml(site){
     <div><b>System</b> ${escapeHtml(site.existingSystemName||"")}</div>
     <div><b>Wired or wireless</b> ${escapeHtml(site.existingSystemWired||"")}</div>
     <div><b>Door count</b> ${escapeHtml(site.existingSystemDoorCount||"")}</div>
-    <div><b>Problems</b> ${escapeHtml(site.existingSystemProblems||"")}</div>` : `<div><b>Existing system</b> ${escapeHtml(site.existingSystemPresent||"")}</div>`;
+    <div><b>Problems</b> ${escapeHtml(site.existingSystemProblems||"")}</div>
+  ` : `<div><b>Existing system</b> ${escapeHtml(site.existingSystemPresent||"")}</div>`;
 
   const cameraBlock = `
     <div><b>Camera interest</b> ${escapeHtml(site.cameraInterest||"")}</div>
     <div><b>Indoor camera count</b> ${escapeHtml(site.cameraIndoorCount||"")}</div>
     <div><b>Outdoor camera count</b> ${escapeHtml(site.cameraOutdoorCount||"")}</div>
-    <div><b>Camera notes</b> ${escapeHtml(site.cameraNotes||"")}</div>`;
+    <div><b>Camera notes</b> ${escapeHtml(site.cameraNotes||"")}</div>
+  `;
 
-  return `<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Survey report</title>
+  return `<!doctype html>
+  <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Survey report</title>
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:18px;color:#111;}
     h1{margin:0 0 6px;}
     .muted{opacity:.75;}
     table{width:100%;border-collapse:collapse;margin:14px 0;}
     th,td{border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;text-align:left;}
-    @media print{button{display:none;}}
-  </style></head><body>
-  <button onclick="window.print()">Print or Save as PDF</button>
-  <h1>Access control survey</h1>
-  <div class="muted">Created ${escapeHtml(created)} | Updated ${escapeHtml(updated)}</div>
+    @media print { button{display:none;} }
+  </style>
+  </head><body>
+    <button onclick="window.print()">Print or Save as PDF</button>
+    <h1>Access control survey</h1>
+    <div class="muted">Created ${escapeHtml(created)} | Updated ${escapeHtml(updated)}</div>
 
-  <h3>Site</h3>
-  <div><b>Customer</b> ${escapeHtml(site.customer||"")}</div>
-  <div><b>Site</b> ${escapeHtml(site.siteName||"")}</div>
-  <div><b>Address</b> ${escapeHtml(site.address||"")}</div>
-  <div><b>Contact</b> ${escapeHtml(site.contactName||"")} ${escapeHtml(site.contactPhone||"")}</div>
-  <div><b>Credentials</b> ${escapeHtml(creds||"")}</div>
-  <div><b>System goals</b> ${escapeHtml(goalsText)}</div>
-  ${existingSystem}
-  ${cameraBlock}
-  <div><b>Key blank default</b> ${escapeHtml(site.keyBlankDefault||"")}</div>
-  <div><b>Notes</b> ${escapeHtml(site.notes||"")}</div>
+    <h3>Site</h3>
+    <div><b>Customer</b> ${escapeHtml(site.customer||"")}</div>
+    <div><b>Site</b> ${escapeHtml(site.siteName||"")}</div>
+    <div><b>Address</b> ${escapeHtml(site.address||"")}</div>
+    <div><b>Contact</b> ${escapeHtml(site.contactName||"")} ${escapeHtml(site.contactPhone||"")}</div>
+    <div><b>Credentials</b> ${escapeHtml(creds||"")}</div>
+    <div><b>System goals</b> ${escapeHtml(goalsText)}</div>
+    ${existingSystem}
+    ${cameraBlock}
+    <div><b>Key blank default</b> ${escapeHtml(site.keyBlankDefault||"")}</div>
+    <div><b>Notes</b> ${escapeHtml(site.notes||"")}</div>
 
-  <h3>Door table</h3>
-  <table><thead><tr><th>Door</th><th>Location</th><th>In or out</th><th>Type</th><th>Lock</th><th>Complete</th></tr></thead><tbody>${rows}</tbody></table>
+    <h3>Door table</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Door</th><th>Location</th><th>In or out</th><th>Type</th><th>Lock</th><th>Complete</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
 
-  <h3>Door details</h3>
-  ${doorDetails || "<div class='muted'>No doors</div>"}
+    <h3>Door details</h3>
+    ${doorDetails || "<div class='muted'>No doors</div>"}
+
   </body></html>`;
 }
 
-function modal(html){
-  const backdrop = document.createElement("div");
-  backdrop.className = "modalBackdrop";
-  backdrop.innerHTML = `<div class="modal">${html}</div>`;
-  backdrop.addEventListener("click", (e)=>{ if(e.target===backdrop) backdrop.remove(); });
-  document.body.appendChild(backdrop);
+function saveDetailsState(prefix){
+  const open = Array.from(document.querySelectorAll("details[data-section]"))
+    .filter(d=>d.open)
+    .map(d=>d.getAttribute("data-section"));
+  sessionStorage.setItem(prefix, JSON.stringify(open));
 }
-function multiSelectChips(labelText, key, values, options){
-  const selected = new Set(values || []);
-  const chips = options.map(opt=>{
-    const active = selected.has(opt);
-    return `<span class="chip" data-opt="${escapeHtml(opt)}" style="${active ? "border-color: rgba(236,86,40,.7); box-shadow: 0 0 0 1px rgba(236,86,40,.25) inset;" : ""}">${escapeHtml(opt)}</span>`;
-  }).join("");
-  return `<div><label>${escapeHtml(labelText)}</label><div class="row" data-multi="${escapeHtml(key)}">${chips}</div><div class="muted small">Tap to toggle</div></div>`;
-}
-function selectField(labelText, value, options, onChange){
-  const opts = ["", ...options].map(o => {
-    const label = o ? makeTitleCase(o) : "Select";
-    return `<option value="${escapeHtml(o)}" ${value===o?"selected":""}>${escapeHtml(label)}</option>`;
-  }).join("");
-  return `<div><label>${escapeHtml(labelText)}</label><select onchange="${onChange}">${opts}</select></div>`;
-}
-function radioYesNo(labelText, key, value, onChange, includeUnknown){
-  const opts = includeUnknown ? ["yes","no","unknown"] : ["yes","no"];
-  const radios = opts.map(v=>{
-    const checked = value===v ? "checked" : "";
-    const lab = makeTitleCase(v);
-    return `<label><input type="radio" name="${escapeHtml(key)}" value="${escapeHtml(v)}" ${checked} onchange="${onChange}"/>${escapeHtml(lab)}</label>`;
-  }).join("");
-  return `<div><label>${escapeHtml(labelText)}</label><div class="radioRow">${radios}</div></div>`;
-}
-function fractionField(labelText, siteId, doorId, path, value, placeholder){
-  const id = "f_" + uid();
-  const common = ["1/8","1/4","3/8","1/2","5/8","3/4","7/8"];
-  const chips = common.map(c=>`<span class="chip" onclick="appendFraction('${id}','${c}')">${c}</span>`).join("");
-  return `<div><label>${escapeHtml(labelText)}</label>
-    <input id="${id}" value="${escapeHtml(value||"")}" placeholder="${escapeHtml(placeholder||"")}"
-      onblur="normalizeFraction('${id}','${siteId}','${doorId}','${path}')"
-      oninput="updateDoorField('${siteId}','${doorId}','${path}', this.value)"/>
-    <div class="muted small">Type 2 3 4 to get 2 3/4</div>
-    <div class="fractionHelp">${chips}</div></div>`;
+
+function restoreDetailsState(prefix){
+  let open = [];
+  try{ open = JSON.parse(sessionStorage.getItem(prefix) || "[]"); }catch{}
+  document.querySelectorAll("details[data-section]").forEach(d=>{
+    const key = d.getAttribute("data-section");
+    d.open = open.includes(key);
+    d.addEventListener("toggle", ()=>saveDetailsState(prefix));
+  });
 }
 
 window.appendFraction = function(inputId, frac){
@@ -366,6 +600,7 @@ window.appendFraction = function(inputId, frac){
   else el.value = el.value.trim() + " " + frac;
   el.dispatchEvent(new Event("input"));
 };
+
 window.normalizeFraction = function(inputId, siteId, doorId, path){
   const el = document.getElementById(inputId);
   if(!el) return;
@@ -374,20 +609,754 @@ window.normalizeFraction = function(inputId, siteId, doorId, path){
   updateDoorField(siteId, doorId, path, norm);
 };
 
+window.openHandingHelp = function(){
+  const html = `
+    <div class="modalHeader">
+      <h3>Handing reference</h3>
+      <button onclick="this.closest('.modalBackdrop').remove()">Close</button>
+    </div>
+    <img src="./handing_ref.jpg" alt="handing"/>
+  `;
+  modal(html);
+};
+
+window.openSettings = function(){
+  const current = localStorage.getItem(themeKey) || "";
+  const html = `
+    <div class="modalHeader">
+      <h3>Settings</h3>
+      <button onclick="this.closest('.modalBackdrop').remove()">Close</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <label>Theme</label>
+      <div class="radioRow">
+        <label><input type="radio" name="t" value="" ${current===""?"checked":""} onchange="setThemeOverride(this.value)"/>Follow phone</label>
+        <label><input type="radio" name="t" value="light" ${current==="light"?"checked":""} onchange="setThemeOverride(this.value)"/>Light</label>
+        <label><input type="radio" name="t" value="dark" ${current==="dark"?"checked":""} onchange="setThemeOverride(this.value)"/>Dark</label>
+      </div>
+    </div>
+  `;
+  modal(html);
+};
+
+window.setThemeOverride = function(v){
+  localStorage.setItem(themeKey, v);
+  applyTheme();
+};
+
+function route(){
+  applyTheme();
+  const app = document.getElementById("app");
+  const hash = location.hash || "#home";
+  const parts = hash.split("/");
+  const view = parts[0];
+  const data = loadData();
+
+  if(view==="#home"){
+    const sites = Object.values(data.sites).sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
+    const cards = sites.map(s=>{
+      const doorCount = s.doors ? Object.keys(s.doors).length : 0;
+
+      let thumbs = "";
+      const pick = getBestThumbnailDoor(s);
+      if(pick){
+        const out = pick.photos?.photo_outside_closed?.dataUrl || "";
+        const inn = pick.photos?.photo_inside_closed?.dataUrl || "";
+        if(out || inn){
+          thumbs = `<div class="thumbPair">
+            <img src="${inn || out}" alt="inside"/>
+            <img src="${out || inn}" alt="outside"/>
+          </div>`;
+        }
+      }
+
+      return `
+        <div class="card">
+          <div class="row" style="justify-content:space-between;">
+            <div style="min-width:0;">
+              <div><b>${escapeHtml(s.customer||"Untitled")}</b></div>
+              <div class="muted small">${escapeHtml(s.siteName||"")}</div>
+              <div class="muted small">${doorCount} doors</div>
+              ${thumbs}
+            </div>
+            <div class="row">
+              <button class="primary" onclick="location.hash='#site/${s.id}'">Open</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Start</h2>
+        <div class="row">
+          <button class="primary" onclick="newSite()">New site</button>
+          <button onclick="exportAll()">Export all data</button>
+          <button onclick="importData()">Import data</button>
+          <button onclick="openSettings()">Settings</button>
+        </div>
+        <div class="muted small" style="margin-top:10px;">Data is stored on this device. Export often.</div>
+      </div>
+
+      <div class="card">
+        <h2>Sites</h2>
+        ${cards || "<div class='muted'>No sites yet</div>"}
+      </div>
+    `;
+    return;
+  }
+
+  if(view==="#site" && parts[1]){
+    const siteId = parts[1];
+    const site = getSite(data, siteId);
+    if(!site){ location.hash="#home"; return; }
+
+    const doors = Object.values(site.doors||{}).sort((a,b)=>(a.doorId||"").localeCompare(b.doorId||""));
+    const doorCards = doors.map(d=>{
+      const st = calcDoorStatus(d);
+      const p = d.photos||{};
+      const out = p.photo_outside_closed?.dataUrl || "";
+      const inn = p.photo_inside_closed?.dataUrl || "";
+      const thumbs = (out || inn) ? `<div class="thumbPair">
+        <img src="${inn || out}" alt="inside"/>
+        <img src="${out || inn}" alt="outside"/>
+      </div>` : "";
+      return `
+        <div class="card">
+          <div class="row" style="justify-content:space-between;">
+            <div style="min-width:0;">
+              <div><b>${escapeHtml(d.doorId||"Door")}</b> <span class="pill">${st.complete ? "Complete" : "Incomplete"}</span></div>
+              <div class="muted small">${escapeHtml(d.location||"")}</div>
+              ${thumbs}
+            </div>
+            <div class="row">
+              <button onclick="location.hash='#door/${siteId}/${d.id}'">Edit</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const credsOptions = ["PIN","Prox card","Keychain fob","Phone credentials","Remote entry only","Other"];
+    const selected = new Set(site.credentials || []);
+    const chips = credsOptions.map(opt=>{
+      const active = selected.has(opt);
+      return `<span class="chip" data-cred="${escapeHtml(opt)}" style="${active ? "border-color: rgba(236,86,40,.85); box-shadow: 0 0 0 1px rgba(236,86,40,.25) inset;" : ""}">${escapeHtml(opt)}</span>`;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Site info</h2>
+        <div class="grid2">
+          <div>
+            <label class="req">Customer</label>
+            <input value="${escapeHtml(site.customer||"")}" oninput="updateSiteField('${siteId}','customer',this.value)"/>
+          </div>
+          <div>
+            <label class="req">Site name</label>
+            <input value="${escapeHtml(site.siteName||"")}" oninput="updateSiteField('${siteId}','siteName',this.value)"/>
+          </div>
+          <div>
+            <label>Address</label>
+            <input value="${escapeHtml(site.address||"")}" oninput="updateSiteField('${siteId}','address',this.value)"/>
+          </div>
+          <div>
+            <label>Contact name</label>
+            <input value="${escapeHtml(site.contactName||"")}" oninput="updateSiteField('${siteId}','contactName',this.value)"/>
+          </div>
+          <div>
+            <label>Contact phone</label>
+            <input value="${escapeHtml(site.contactPhone||"")}" oninput="updateSiteField('${siteId}','contactPhone',this.value)"/>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label class="req">Credentials</label>
+          <div class="row" id="credChips">${chips}</div>
+          <div class="muted small">Tap to toggle</div>
+        </div>
+
+        <details open data-section="site_goals" style="margin-top:12px;">
+          <summary>System goals</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${radioOptions("Remote management required","goalRemoteMgmt",site.goalRemoteMgmt,["yes","no"],`updateSiteField('${siteId}','goalRemoteMgmt',this.value)`, false)}
+            ${radioOptions("Audit trail required","goalAudit",site.goalAudit,["yes","no"],`updateSiteField('${siteId}','goalAudit',this.value)`, false)}
+            ${radioOptions("Open to monthly subscription for cloud dashboard","goalCloudOk",site.goalCloudOk,["yes","no"],`updateSiteField('${siteId}','goalCloudOk',this.value)`, false)}
+            ${radioOptions("Wants us to manage software monthly for added fee","goalWeManageSoftware",site.goalWeManageSoftware,["yes","no"],`updateSiteField('${siteId}','goalWeManageSoftware',this.value)`, false)}
+          </div>
+
+          <div style="margin-top:12px;">
+            ${radioOptions("Existing access control system present","existingSystemPresent",site.existingSystemPresent,["yes","no","unknown"],`updateSiteField('${siteId}','existingSystemPresent',this.value)`, false)}
+          </div>
+
+          ${site.existingSystemPresent==="yes" ? `
+            <div class="grid2" style="margin-top:10px;">
+              <div>
+                <label>What system</label>
+                <input value="${escapeHtml(site.existingSystemName||"")}" oninput="updateSiteField('${siteId}','existingSystemName',this.value)"/>
+              </div>
+              <div>
+                <label>Wired or wireless</label>
+                <select onchange="updateSiteField('${siteId}','existingSystemWired',this.value)">
+                  ${["","wired","wireless","unknown"].map(v=>`<option value="${v}" ${site.existingSystemWired===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label>How many doors</label>
+                <input value="${escapeHtml(site.existingSystemDoorCount||"")}" oninput="updateSiteField('${siteId}','existingSystemDoorCount',this.value)" inputmode="numeric"/>
+              </div>
+              <div>
+                <label>Known problems</label>
+                <input value="${escapeHtml(site.existingSystemProblems||"")}" oninput="updateSiteField('${siteId}','existingSystemProblems',this.value)"/>
+              </div>
+            </div>
+          ` : ""}
+
+          <div class="grid2" style="margin-top:12px;">
+            <div>
+              <label>Camera interest</label>
+              <select onchange="updateSiteField('${siteId}','cameraInterest',this.value)">
+                ${["","not interested","maybe","yes"].map(v=>`<option value="${v}" ${site.cameraInterest===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label>Indoor camera count estimate</label>
+              <input value="${escapeHtml(site.cameraIndoorCount||"")}" oninput="updateSiteField('${siteId}','cameraIndoorCount',this.value)" inputmode="numeric"/>
+            </div>
+            <div>
+              <label>Outdoor camera count estimate</label>
+              <input value="${escapeHtml(site.cameraOutdoorCount||"")}" oninput="updateSiteField('${siteId}','cameraOutdoorCount',this.value)" inputmode="numeric"/>
+            </div>
+            <div>
+              <label>Camera notes</label>
+              <input value="${escapeHtml(site.cameraNotes||"")}" oninput="updateSiteField('${siteId}','cameraNotes',this.value)"/>
+            </div>
+          </div>
+        </details>
+
+        <details data-section="site_defaults" style="margin-top:12px;">
+          <summary>Site defaults</summary>
+          <div class="muted small" style="margin-top:8px;">Used to prefill new doors. Each door can override.</div>
+          <div class="grid2" style="margin-top:10px;">
+            <div>
+              <label>Key blank default</label>
+              <input value="${escapeHtml(site.keyBlankDefault||"")}" oninput="updateSiteField('${siteId}','keyBlankDefault',this.value)"/>
+            </div>
+            ${selectField("Door material default","defaultDoorMaterial",site.defaultDoorMaterial,["hollow steel","aluminum storefront","wood","glass","other"],`updateSiteField('${siteId}','defaultDoorMaterial',this.value)`, false)}
+            ${selectField("Frame material default","defaultFrameMaterial",site.defaultFrameMaterial,["hollow steel","aluminum storefront","wood","concrete filled steel","other"],`updateSiteField('${siteId}','defaultFrameMaterial',this.value)`, false)}
+            ${selectField("Lock type default","defaultLockType",site.defaultLockType,["cylindrical","mortise","panic","deadbolt","other"],`updateSiteField('${siteId}','defaultLockType',this.value)`, false)}
+            <div>
+              <label>Exterior trim type default</label>
+              <input value="${escapeHtml(site.defaultExteriorTrimType||"")}" oninput="updateSiteField('${siteId}','defaultExteriorTrimType',this.value)"/>
+            </div>
+            <div>
+              <label>Hinge type default</label>
+              <select onchange="updateSiteField('${siteId}','defaultHingeType',this.value)">
+                ${["","standard","pivot","continuous","hidden","other"].map(v=>`<option value="${v}" ${site.defaultHingeType===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label>Backset default</label>
+              <select onchange="updateSiteField('${siteId}','defaultBackset',this.value)">
+                ${["","31/32","1 1/8","1 1/2","2 3/8","2 3/4","other"].map(v=>`<option value="${v}" ${site.defaultBackset===v?"selected":""}>${v||"Select"}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        </details>
+
+        <label>Notes</label>
+        <textarea oninput="updateSiteField('${siteId}','notes',this.value)">${escapeHtml(site.notes||"")}</textarea>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="primary" onclick="addDoor('${siteId}')">Add door</button>
+          <button onclick="location.hash='#summary/${siteId}'">Site summary</button>
+          <button onclick="exportSite('${siteId}')">Export site</button>
+          <button onclick="location.hash='#home'">Back</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Doors</h2>
+        ${doorCards || "<div class='muted'>No doors yet</div>"}
+      </div>
+    `;
+
+    document.querySelectorAll("#credChips .chip").forEach(chip=>{
+      chip.onclick = ()=>{
+        const opt = chip.getAttribute("data-cred");
+        const data2 = loadData();
+        const s2 = getSite(data2, siteId);
+        if(!s2) return;
+        s2.credentials = s2.credentials || [];
+        const idx = s2.credentials.indexOf(opt);
+        if(idx>=0) s2.credentials.splice(idx,1);
+        else s2.credentials.push(opt);
+        s2.updatedAt = nowIso();
+        saveData(data2);
+        route();
+      };
+    });
+
+    restoreDetailsState("site_"+siteId);
+    return;
+  }
+
+  if(view==="#door" && parts[1] && parts[2]){
+    const siteId = parts[1];
+    const doorId = parts[2];
+    const site = getSite(data, siteId);
+    if(!site || !site.doors || !site.doors[doorId]){ location.hash="#site/"+siteId; return; }
+    const door = site.doors[doorId];
+    const st = calcDoorStatus(door);
+    const sugg = getDoorSuggestions(site);
+
+    const handingHelp = `<span class="helpIcon" onclick="openHandingHelp()">?</span>`;
+
+    const photoSlots = [
+      {key:"photo_outside_closed", label:"Outside door closed", required:true},
+      {key:"photo_inside_closed", label:"Inside door closed", required:true},
+      {key:"photo_edge", label:"Door edge", required:true},
+      {key:"photo_strike", label:"Strike closeup", required:true},
+      {key:"photo_hinges", label:"Hinges closeup"},
+      {key:"photo_frame_profile", label:"Frame profile side"},
+      {key:"photo_exterior_trim", label:"Exterior trim closeup"},
+      {key:"photo_interior_trim", label:"Interior trim closeup"},
+      {key:"photo_model_numbers", label:"Hardware model numbers"},
+      {key:"photo_key", label:"Key photo"},
+      {key:"photo_extras", label:"Extras on door"},
+      {key:"photo_fire_door_label", label:"Door fire label photo"},
+      {key:"photo_fire_frame_label", label:"Frame fire label photo"},
+      {key:"photo_fire_wall_label", label:"Firewall label photo"}
+    ];
+
+    const photoHtml = photoSlots.map(slot=>{
+      const obj = (door.photos && door.photos[slot.key]) || null;
+      const img = obj && obj.dataUrl ? `<img src="${obj.dataUrl}" alt="photo"/>` : `<div class="muted small">No photo</div>`;
+      const req = slot.required ? `<span class="pill accent">Required</span>` : `<span class="pill">Optional</span>`;
+      const lbl = slot.required ? `<span class="req">${escapeHtml(slot.label)}</span>` : escapeHtml(slot.label);
+      return `
+        <div class="photoSlot">
+          <div class="row" style="justify-content:space-between;">
+            <div><b>${lbl}</b></div>
+            ${req}
+          </div>
+          <div style="margin-top:10px;">${img}</div>
+          <div class="row" style="margin-top:10px;">
+            <input type="file" accept="image/*" capture="environment" onchange="setPhoto('${siteId}','${doorId}','${slot.key}', this.files[0])"/>
+            ${obj && obj.dataUrl ? `<button onclick="removePhoto('${siteId}','${doorId}','${slot.key}')">Remove</button>` : ""}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const frameRefBlock = `
+      <div style="margin-top:12px;">
+        <img src="./frame_ref_1.jpg" style="width:100%;border-radius:14px;border:var(--borderStrong);" alt="frame ref"/>
+      </div>
+      <div class="muted small" style="margin-top:10px;">Use the lettered sketch and enter each dimension in fractional inches</div>
+    `;
+
+    const wrOpts = ["existing conduit","new conduit","drop ceiling","attic","none","unknown"];
+    const wrSel = new Set((door.wireRoutingOptions||[]));
+    const wrChips = wrOpts.map(opt=>{
+      const active = wrSel.has(opt);
+      return `<span class="chip" data-wr="${escapeHtml(opt)}" style="${active ? "border-color: rgba(236,86,40,.85); box-shadow: 0 0 0 1px rgba(236,86,40,.25) inset;" : ""}">${escapeHtml(makeTitleCase(opt))}</span>`;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Door</h2>
+        <div class="grid2">
+          <div>
+            <label class="req">Door ID</label>
+            <input value="${escapeHtml(door.doorId||"")}" oninput="updateDoorField('${siteId}','${doorId}','doorId',this.value)"/>
+          </div>
+          <div>
+            <label class="req">Location label</label>
+            <input value="${escapeHtml(door.location||"")}" oninput="updateDoorField('${siteId}','${doorId}','location',this.value)"/>
+          </div>
+        </div>
+
+        ${!st.complete ? `
+          <div class="warnBox" style="margin-top:12px;">
+            <b>Warning</b>
+            <div class="muted small" style="margin-top:6px;">Missing fields: ${escapeHtml(st.missing.join(", ")) || "None"}</div>
+            <div class="muted small" style="margin-top:6px;">Missing required photos: ${escapeHtml(st.missingPhotos.join(", ")) || "None"}</div>
+          </div>
+        ` : ""}
+
+        <details open data-section="door_frame" style="margin-top:12px;">
+          <summary>Door and frame</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${radioOptions("Interior or exterior","intExt",door.intExt,["interior","exterior"],`updateDoorField('${siteId}','${doorId}','intExt',this.value)`, true)}
+            ${radioOptions("Swing","swing",door.swing,["inswing","outswing"],`updateDoorField('${siteId}','${doorId}','swing',this.value)`, true)}
+            ${selectField("Door type","doorType",door.doorType,["single","double with mullion","double no mullion"],`updateDoorField('${siteId}','${doorId}','doorType',this.value)`, true)}
+            ${selectField("Door material","doorMaterial",door.doorMaterial,["hollow steel","aluminum storefront","wood","glass","other"],`updateDoorField('${siteId}','${doorId}','doorMaterial',this.value)`, true)}
+            ${selectField("Frame material","frameMaterial",door.frameMaterial,["hollow steel","aluminum storefront","wood","concrete filled steel","other"],`updateDoorField('${siteId}','${doorId}','frameMaterial',this.value)`, true)}
+            <div>
+              <label class="req">Handing ${handingHelp}</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','handing',this.value)">
+                ${["","LH","RH","LHR","RHR"].map(v=>`<option value="${v}" ${door.handing===v?"selected":""}>${v? v : "Select"}</option>`).join("")}
+              </select>
+            </div>
+            ${radioOptions("Door closer present","closerPresent",door.closerPresent,["yes","no"],`updateDoorField('${siteId}','${doorId}','closerPresent',this.value)`, false)}
+            ${radioOptions("Alignment issues","alignmentIssues",door.alignmentIssues,["yes","no"],`updateDoorField('${siteId}','${doorId}','alignmentIssues',this.value)`, false)}
+          </div>
+
+          ${door.doorType==="double no mullion" ? `
+            <div class="grid2" style="margin-top:10px;">
+              ${radioOptions("Astragal present","astragal",door.astragal,["yes","no"],`updateDoorField('${siteId}','${doorId}','astragal',this.value)`, false)}
+              <div>
+                <label>Active leaf</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','activeLeaf',this.value)">
+                  ${["","left","right"].map(v=>`<option value="${v}" ${door.activeLeaf===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+              </div>
+            </div>
+          ` : ""}
+
+          ${door.alignmentIssues==="yes" ? `
+            <div style="margin-top:10px;">
+              <label>Alignment notes</label>
+              <input value="${escapeHtml(door.alignmentNotes||"")}" oninput="updateDoorField('${siteId}','${doorId}','alignmentNotes',this.value)"/>
+            </div>
+          ` : ""}
+
+          <div class="grid2" style="margin-top:10px;">
+            <div>
+              <label>Exterior keypad mount construction</label>
+              <input value="${escapeHtml(door.exteriorKeypadConstruction||"")}" oninput="updateDoorField('${siteId}','${doorId}','exteriorKeypadConstruction',this.value)"/>
+            </div>
+            <div>
+              <label>Interior push to exit mount construction</label>
+              <input value="${escapeHtml(door.interiorPteConstruction||"")}" oninput="updateDoorField('${siteId}','${doorId}','interiorPteConstruction',this.value)"/>
+            </div>
+          </div>
+        </details>
+
+        <details data-section="measurements" style="margin-top:12px;">
+          <summary>Measurements</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${fractionField("Door width", siteId, doorId, "measurements.doorWidth", door.measurements?.doorWidth, "Example 36", false)}
+            ${fractionField("Opening width", siteId, doorId, "measurements.openingWidth", door.measurements?.openingWidth, "Example 38", false)}
+            ${fractionField("Frame width", siteId, doorId, "measurements.frameWidth", door.measurements?.frameWidth, "Overall frame", false)}
+            ${fractionField("Door height", siteId, doorId, "measurements.doorHeight", door.measurements?.doorHeight, "Example 80", false)}
+            ${fractionField("Door stile thickness", siteId, doorId, "measurements.doorStileThickness", door.measurements?.doorStileThickness, "Lock side stile", false)}
+            ${fractionField("Centerline from floor", siteId, doorId, "measurements.centerlineFromFloor", door.measurements?.centerlineFromFloor, "To center of hardware", false)}
+            ${fractionField("Door thickness", siteId, doorId, "doorThickness", door.doorThickness, "Example 1 3/4", false)}
+          </div>
+          <div style="margin-top:10px;">
+            <label>Weather blade or jamb notes</label>
+            <input value="${escapeHtml(door.measurements?.weatherNotes||"")}" oninput="updateDoorField('${siteId}','${doorId}','measurements.weatherNotes',this.value)"/>
+          </div>
+
+          <div class="card" style="margin-top:12px;">
+            <h2 style="margin:0 0 6px;">Measurement references</h2>
+            <div class="photoGrid">
+              <div><img src="./single_door_measurements.jpg" style="width:100%;border-radius:14px;border:var(--borderStrong);" alt="single"/></div>
+              <div><img src="./double_door_measurements.jpg" style="width:100%;border-radius:14px;border:var(--borderStrong);" alt="double"/></div>
+            </div>
+          </div>
+        </details>
+
+        <details data-section="frame_sketch" style="margin-top:12px;">
+          <summary>Frame sketch</summary>
+          ${frameRefBlock}
+          <div class="grid2" style="margin-top:12px;">
+            ${fractionField("A", siteId, doorId, "frameSketch.A", door.frameSketch?.A, "A", false)}
+            ${fractionField("B", siteId, doorId, "frameSketch.B", door.frameSketch?.B, "B", false)}
+            ${fractionField("C", siteId, doorId, "frameSketch.C", door.frameSketch?.C, "C", false)}
+            ${fractionField("D", siteId, doorId, "frameSketch.D", door.frameSketch?.D, "D", false)}
+            ${fractionField("E", siteId, doorId, "frameSketch.E", door.frameSketch?.E, "E", false)}
+            ${fractionField("F", siteId, doorId, "frameSketch.F", door.frameSketch?.F, "F", false)}
+          </div>
+        </details>
+
+        <details data-section="hardware" style="margin-top:12px;">
+          <summary>Existing hardware</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${selectField("Lock type","lockType",door.lockType,["cylindrical","mortise","panic","deadbolt","other"],`updateDoorField('${siteId}','${doorId}','lockType',this.value)`, true)}
+            ${textWithSuggestions("Exterior trim type", false, siteId, doorId, "exteriorTrimType", door.exteriorTrimType, sugg.exteriorTrimType)}
+            ${textWithSuggestions("Interior hardware", false, siteId, doorId, "interiorHardware", door.interiorHardware, sugg.interiorHardware)}
+            ${textWithSuggestions("Exit trim", false, siteId, doorId, "exitTrim", door.exitTrim, sugg.exitTrim)}
+            ${textWithSuggestions("Door closer model numbers", false, siteId, doorId, "doorCloserModelNumbers", door.doorCloserModelNumbers, sugg.doorCloserModelNumbers)}
+            <div>
+              <label>Key blank</label>
+              <input value="${escapeHtml(door.keyBlank||"")}" oninput="updateDoorField('${siteId}','${doorId}','keyBlank',this.value)"/>
+            </div>
+            <div>
+              <label>Backset</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','backset',this.value)">
+                ${["","31/32","1 1/8","1 1/2","2 3/8","2 3/4","other"].map(v=>`<option value="${v}" ${door.backset===v?"selected":""}>${v||"Select"}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+
+          <div class="grid2" style="margin-top:10px;">
+            <div>
+              <label>Function</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','functionCurrent',this.value)">
+                ${["","storeroom","office","classroom","passage","entry","exit only","unknown"].map(v=>`<option value="${v}" ${door.functionCurrent===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label>Change function to</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','functionChangeTo',this.value)">
+                ${["N/A","storeroom","office","classroom","passage","entry","exit only","unknown"].map(v=>`<option value="${v}" ${door.functionChangeTo===v?"selected":""}>${escapeHtml(v==="N/A"?"N/A":makeTitleCase(v))}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+
+          <div class="grid2" style="margin-top:10px;">
+            ${fractionField("Gap between door and frame", siteId, doorId, "doorFrameGap", door.doorFrameGap, "Example 1/8", false)}
+            <div>
+              <label>Hinge type</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','hingeType',this.value)">
+                ${["","standard","pivot","continuous","hidden","other"].map(v=>`<option value="${v}" ${door.hingeType===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label>Other items on door</label>
+            <input value="${escapeHtml(door.otherItemsOnDoor||"")}" oninput="updateDoorField('${siteId}','${doorId}','otherItemsOnDoor',this.value)"/>
+          </div>
+        </details>
+
+        <details data-section="power" style="margin-top:12px;">
+          <summary>Power and connectivity</summary>
+          <div class="grid2" style="margin-top:10px;">
+            ${radioOptions("Power near door","powerNearDoor",door.powerNearDoor,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','powerNearDoor',this.value)`, true)}
+            <div>
+              <label class="req">Wire routing options</label>
+              <div class="row" id="wrChips">${wrChips}</div>
+              <div class="muted small">Tap to toggle. None and Unknown clear other options.</div>
+            </div>
+            <div>
+              <label class="req">Wifi strength</label>
+              <select onchange="updateDoorField('${siteId}','${doorId}','wifiStrength',this.value)">
+                ${["","none","weak","medium","strong"].map(v=>`<option value="${v}" ${door.wifiStrength===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+          <label>Notes</label>
+          <textarea oninput="updateDoorField('${siteId}','${doorId}','powerNotes',this.value)">${escapeHtml(door.powerNotes||"")}</textarea>
+        </details>
+
+        <details data-section="usecase" style="margin-top:12px;">
+          <summary>Use case</summary>
+          <div class="grid2" style="margin-top:10px;">
+            <div>
+              <label>User count estimate</label>
+              <input value="${escapeHtml(door.userCount||"")}" oninput="updateDoorField('${siteId}','${doorId}','userCount',this.value)" inputmode="numeric"/>
+            </div>
+            ${radioOptions("Need schedules","needSchedules",door.needSchedules,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','needSchedules',this.value)`, false)}
+            ${radioOptions("Remote management","remoteMgmt",door.remoteMgmt,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','remoteMgmt',this.value)`, false)}
+            ${radioOptions("Audit trail","auditTrail",door.auditTrail,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','auditTrail',this.value)`, false)}
+            ${radioOptions("Temporary access","tempAccess",door.tempAccess,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','tempAccess',this.value)`, false)}
+          </div>
+          <label>Notes</label>
+          <textarea oninput="updateDoorField('${siteId}','${doorId}','useNotes',this.value)">${escapeHtml(door.useNotes||"")}</textarea>
+        </details>
+
+        <details data-section="lifesafety" style="margin-top:12px;">
+          <summary>Life safety and fire</summary>
+
+          <div class="note small">
+            Panic hardware is commonly required on many exit doors for assembly and educational occupancies with occupant load over 50. Free egress must always be maintained. Reference NFPA 101 Life Safety Code.
+          </div>
+
+          <div class="grid2" style="margin-top:12px;">
+            ${radioOptions("Panic required","panicRequired",door.panicRequired,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','panicRequired',this.value)`, true)}
+            ${radioOptions("Free egress required","freeEgress",door.freeEgress,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','freeEgress',this.value)`, true)}
+            ${radioOptions("Maglock allowed","maglockAllowed",door.maglockAllowed,["yes","no","unknown"],`updateDoorField('${siteId}','${doorId}','maglockAllowed',this.value)`, false)}
+          </div>
+
+          <div class="card" style="margin-top:12px;">
+            <h2 style="margin:0 0 6px;">Fire rating</h2>
+            <div class="grid2" style="margin-top:10px;">
+              <div>
+                <label>Fire rated opening</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','fire.isRated',this.value)">
+                  ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${door.fire?.isRated===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label>Rating hours</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','fire.ratingHours',this.value)">
+                  ${["","20 minute","45 minute","60 minute","90 minute","3 hour","unknown"].map(v=>`<option value="${v}" ${door.fire?.ratingHours===v?"selected":""}>${v||"Select"}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label>Hardware fire rated</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','fire.hardwareRated',this.value)">
+                  ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${door.fire?.hardwareRated===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label>Fire panel present</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','fire.firePanel',this.value)">
+                  ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${door.fire?.firePanel===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+                <div class="muted small">Large red box mounted on a wall</div>
+              </div>
+              <div>
+                <label>Sprinklers present</label>
+                <select onchange="updateDoorField('${siteId}','${doorId}','fire.sprinklers',this.value)">
+                  ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${door.fire?.sprinklers===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
+                </select>
+              </div>
+            </div>
+
+            <div class="muted small" style="margin-top:10px;">Fire labels are captured as photos in the Photos section.</div>
+          </div>
+        </details>
+
+        <details data-section="photos" style="margin-top:12px;">
+          <summary>Photos</summary>
+          <div class="muted small" style="margin-top:8px;">Required photos must be captured to mark door complete</div>
+          <div class="photoGrid" style="margin-top:10px;">
+            ${photoHtml}
+          </div>
+        </details>
+
+        <div class="row" style="margin-top:12px;">
+          <button onclick="location.hash='#site/${siteId}'">Back</button>
+          <button onclick="duplicateDoor('${siteId}','${doorId}')">Duplicate door</button>
+          <button onclick="deleteDoor('${siteId}','${doorId}')">Delete door</button>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll("#wrChips .chip").forEach(chip=>{
+      chip.onclick = ()=>{
+        const opt = chip.getAttribute("data-wr");
+        const data2 = loadData();
+        const s2 = getSite(data2, siteId);
+        if(!s2) return;
+        const d2 = s2.doors[doorId];
+        d2.wireRoutingOptions = Array.isArray(d2.wireRoutingOptions) ? d2.wireRoutingOptions : [];
+        const set = new Set(d2.wireRoutingOptions);
+
+        if(opt === "none" || opt === "unknown"){
+          if(set.has(opt)){
+            set.delete(opt);
+          }else{
+            set.clear();
+            set.add(opt);
+          }
+        }else{
+          if(set.has(opt)) set.delete(opt);
+          else set.add(opt);
+          set.delete("none");
+          set.delete("unknown");
+        }
+
+        d2.wireRoutingOptions = Array.from(set);
+        d2.updatedAt = nowIso();
+        s2.updatedAt = nowIso();
+        saveData(data2);
+        route();
+      };
+    });
+
+    restoreDetailsState("door_"+siteId+"_"+doorId);
+    return;
+  }
+
+  if(view==="#summary" && parts[1]){
+    const siteId = parts[1];
+    const site = getSite(data, siteId);
+    if(!site){ location.hash="#home"; return; }
+
+    const doors = Object.values(site.doors||{}).sort((a,b)=>(a.doorId||"").localeCompare(b.doorId||""));
+    const issues = [];
+    const rows = doors.map(d=>{
+      const st = calcDoorStatus(d);
+      if(!st.complete){
+        if(st.missing.length) issues.push(`Door ${d.doorId||""} missing fields: ${st.missing.join(", ")}`);
+        if(st.missingPhotos.length) issues.push(`Door ${d.doorId||""} missing photos: ${st.missingPhotos.join(", ")}`);
+      }
+      return `<tr>
+        <td>${escapeHtml(d.doorId||"")}</td>
+        <td>${escapeHtml(d.location||"")}</td>
+        <td>${st.complete ? "Yes" : "No"}</td>
+      </tr>`;
+    }).join("");
+
+    app.innerHTML = `
+      <div class="card">
+        <h2>Site summary</h2>
+        ${issues.length ? `
+          <div class="warnBox">
+            <b>Warnings</b>
+            <ul class="small muted" style="margin:8px 0 0;">
+              ${issues.map(i=>`<li>${escapeHtml(i)}</li>`).join("")}
+            </ul>
+          </div>
+        ` : `<div class="muted">No warnings</div>`}
+
+        <div class="row" style="margin-top:12px;">
+          <button class="primary" onclick="exportSite('${siteId}')">Export site</button>
+          <button onclick="downloadReport('${siteId}')">Download report</button>
+          <button onclick="location.hash='#site/${siteId}'">Back</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Doors</h2>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr>
+            <th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Door</th>
+            <th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Location</th>
+            <th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Complete</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+    return;
+  }
+
+  location.hash="#home";
+}
+
 window.newSite = function(){
   const data = loadData();
   const id = uid();
   data.sites[id] = {
-    id, createdAt: nowIso(), updatedAt: nowIso(),
-    customer:"", siteName:"", address:"", contactName:"", contactPhone:"", notes:"",
+    id,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    customer:"",
+    siteName:"",
+    address:"",
+    contactName:"",
+    contactPhone:"",
+    notes:"",
     credentials:[],
-    goalRemoteMgmt:"", goalAudit:"", goalCloudOk:"", goalLocalOnly:"", goalWeManageSoftware:"",
-    existingSystemPresent:"unknown", existingSystemName:"", existingSystemWired:"", existingSystemDoorCount:"", existingSystemProblems:"",
-    cameraInterest:"", cameraIndoorCount:"", cameraOutdoorCount:"", cameraNotes:"",
+    goalRemoteMgmt:"",
+    goalAudit:"",
+    goalCloudOk:"",
+    goalWeManageSoftware:"",
+    existingSystemPresent:"unknown",
+    existingSystemName:"",
+    existingSystemWired:"",
+    existingSystemDoorCount:"",
+    existingSystemProblems:"",
+    cameraInterest:"",
+    cameraIndoorCount:"",
+    cameraOutdoorCount:"",
+    cameraNotes:"",
     keyBlankDefault:"",
-    defaultDoorMaterial:"", defaultFrameMaterial:"", defaultLockType:"",
-    defaultExteriorTrimType:"", defaultHingeType:"", defaultHingeCount:"",
-    defaultBackset:"", defaultCloserPresent:"unknown", defaultCloserModel:"",
+    defaultDoorMaterial:"",
+    defaultFrameMaterial:"",
+    defaultLockType:"",
+    defaultExteriorTrimType:"",
+    defaultHingeType:"",
+    defaultBackset:"",
     doors:{}
   };
   saveData(data);
@@ -420,40 +1389,73 @@ window.addDoor = function(siteId){
   const site = getSite(data, siteId);
   if(!site) return;
   const id = uid();
-  site.doors[id] = {
-    id, createdAt: nowIso(), updatedAt: nowIso(),
-    doorId:"", location:"",
-    intExt:"", doorType:"", astragal:"unknown", activeLeaf:"unknown",
+
+  const door = {
+    id,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+    doorId:"",
+    location:"",
+    intExt:"",
+    swing:"",
+    doorType:"",
+    astragal:"no",
+    activeLeaf:"",
     doorMaterial: site.defaultDoorMaterial || "",
     frameMaterial: site.defaultFrameMaterial || "",
-    swing:"", handing:"",
+    handing:"",
     doorThickness:"",
-    closerPresent: site.defaultCloserPresent==="unknown" ? "" : site.defaultCloserPresent,
-    closerModel: site.defaultCloserModel || "",
-    alignmentIssues:"unknown", alignmentNotes:"",
-    exteriorKeypadConstruction:"", interiorPteConstruction:"",
+    closerPresent:"no",
+    alignmentIssues:"no",
+    alignmentNotes:"",
+    exteriorKeypadConstruction:"",
+    interiorPteConstruction:"",
     lockType: site.defaultLockType || "",
     keyBlank: site.keyBlankDefault || "",
     exteriorTrimType: site.defaultExteriorTrimType || "",
+    interiorHardware:"",
+    exitTrim:"",
+    doorCloserModelNumbers:"",
     backset: site.defaultBackset || "",
     doorFrameGap:"",
     hingeType: site.defaultHingeType || "",
-    hingeCount: site.defaultHingeCount || "",
     otherItemsOnDoor:"",
-    functionCurrent:"", functionChangeTo:"N/A",
+    functionCurrent:"",
+    functionChangeTo:"N/A",
     powerNearDoor:"unknown",
-    wirePath:"",
+    wireRoutingOptions:[],
     wifiStrength:"",
     powerNotes:"",
     userCount:"",
-    needSchedules:"unknown", remoteMgmt:"unknown", auditTrail:"unknown", tempAccess:"unknown",
+    needSchedules:"unknown",
+    remoteMgmt:"unknown",
+    auditTrail:"unknown",
+    tempAccess:"unknown",
     useNotes:"",
-    panicRequired:"unknown", freeEgress:"unknown", maglockAllowed:"unknown",
-    fire:{isRated:"",doorLabelText:"",frameLabelText:"",firewallLabelText:"",ratingHours:"",hardwareRated:"",firePanel:"",sprinklers:"",tieIn:""},
-    measurements:{doorWidth:"",openingWidth:"",frameWidth:"",doorHeight:"",doorStileThickness:"",centerlineFromFloor:"",weatherNotes:""},
-    frameSketch:{ref:"",A:"",B:"",C:"",D:"",E:"",F:""},
+    panicRequired:"unknown",
+    freeEgress:"unknown",
+    maglockAllowed:"unknown",
+    fire:{
+      isRated:"",
+      ratingHours:"",
+      hardwareRated:"",
+      firePanel:"",
+      sprinklers:""
+    },
+    measurements:{
+      doorWidth:"",
+      openingWidth:"",
+      frameWidth:"",
+      doorHeight:"",
+      doorStileThickness:"",
+      centerlineFromFloor:"",
+      weatherNotes:""
+    },
+    frameSketch:{A:"",B:"",C:"",D:"",E:"",F:""},
     photos:{}
   };
+
+  site.doors[id] = door;
   site.updatedAt = nowIso();
   saveData(data);
   location.hash = "#door/" + siteId + "/" + id;
@@ -476,8 +1478,11 @@ window.duplicateDoor = function(siteId, doorId){
   const src = site.doors[doorId];
   const id = uid();
   const copy = JSON.parse(JSON.stringify(src));
-  copy.id = id; copy.createdAt = nowIso(); copy.updatedAt = nowIso();
-  copy.doorId = ""; copy.location = "";
+  copy.id = id;
+  copy.createdAt = nowIso();
+  copy.updatedAt = nowIso();
+  copy.doorId = "";
+  copy.location = "";
   site.doors[id] = copy;
   site.updatedAt = nowIso();
   saveData(data);
@@ -485,13 +1490,14 @@ window.duplicateDoor = function(siteId, doorId){
 };
 
 function readFileAsDataUrl(file){
-  return new Promise((resolve,reject)=>{
+  return new Promise((resolve, reject)=>{
     const r = new FileReader();
     r.onload = ()=>resolve(r.result);
     r.onerror = ()=>reject(new Error("file read failed"));
     r.readAsDataURL(file);
   });
 }
+
 async function resizeImageDataUrl(dataUrl, maxDim){
   return new Promise((resolve)=>{
     const img = new Image();
@@ -504,48 +1510,57 @@ async function resizeImageDataUrl(dataUrl, maxDim){
       canvas.width = nw; canvas.height = nh;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0,0,nw,nh);
-      resolve(canvas.toDataURL("image/jpeg", 0.75));
+      const out = canvas.toDataURL("image/jpeg", 0.78);
+      resolve(out);
     };
     img.onerror = ()=>resolve(dataUrl);
     img.src = dataUrl;
   });
 }
+
 window.setPhoto = async function(siteId, doorId, key, file){
   if(!file) return;
   const data = loadData();
   const site = getSite(data, siteId);
   if(!site || !site.doors || !site.doors[doorId]) return;
   const door = site.doors[doorId];
+
   const raw = await readFileAsDataUrl(file);
   const resized = await resizeImageDataUrl(raw, 1600);
-  door.photos[key] = {dataUrl: resized, createdAt: nowIso()};
-  door.updatedAt = nowIso(); site.updatedAt = nowIso();
+  door.photos = door.photos || {};
+  door.photos[key] = { dataUrl: resized, createdAt: nowIso() };
+  door.updatedAt = nowIso();
+  site.updatedAt = nowIso();
   saveData(data);
   route();
 };
+
 window.removePhoto = function(siteId, doorId, key){
   const data = loadData();
   const site = getSite(data, siteId);
   if(!site || !site.doors || !site.doors[doorId]) return;
   const door = site.doors[doorId];
   if(door.photos && door.photos[key]) delete door.photos[key];
-  door.updatedAt = nowIso(); site.updatedAt = nowIso();
+  door.updatedAt = nowIso();
+  site.updatedAt = nowIso();
   saveData(data);
   route();
 };
 
 window.exportAll = function(){
   const data = loadData();
-  downloadTextFile("pal_acs_export_all.json", JSON.stringify(data,null,2), "application/json");
+  downloadTextFile("pal_acs_export_all.json", JSON.stringify(data, null, 2), "application/json");
 };
+
 window.exportSite = function(siteId){
   const data = loadData();
   const site = getSite(data, siteId);
   if(!site) return;
-  const payload = {sites:{[siteId]: site}};
+  const payload = {sites: {[siteId]: site}};
   const safeName = (site.customer || "site").replaceAll(" ","_");
-  downloadTextFile("pal_acs_export_" + safeName + ".json", JSON.stringify(payload,null,2), "application/json");
+  downloadTextFile("pal_acs_export_" + safeName + ".json", JSON.stringify(payload, null, 2), "application/json");
 };
+
 window.downloadReport = function(siteId){
   const data = loadData();
   const site = getSite(data, siteId);
@@ -554,448 +1569,36 @@ window.downloadReport = function(siteId){
   const safeName = (site.customer || "site").replaceAll(" ","_");
   downloadTextFile("pal_acs_report_" + safeName + ".html", html, "text/html");
 };
+
 window.importData = function(){
   const inp = document.createElement("input");
-  inp.type = "file"; inp.accept="application/json";
+  inp.type = "file";
+  inp.accept = "application/json";
   inp.onchange = async ()=>{
     const file = inp.files && inp.files[0];
     if(!file) return;
     const text = await file.text();
-    let incoming=null;
-    try{incoming=JSON.parse(text);}catch{alert("Import failed");return;}
-    if(!incoming || !incoming.sites){alert("Invalid file");return;}
+    let incoming = null;
+    try{ incoming = JSON.parse(text); }catch{ alert("Import failed"); return; }
+    if(!incoming || !incoming.sites){ alert("Invalid file"); return; }
+
     const data = loadData();
-    for(const [id,site] of Object.entries(incoming.sites)) data.sites[id]=site;
-    saveData(data); location.hash="#home"; route();
+    for(const [id, site] of Object.entries(incoming.sites)){
+      data.sites[id] = site;
+    }
+    saveData(data);
+    location.hash="#home";
+    route();
   };
   inp.click();
 };
-
-function attachMultiHandlers(){
-  document.querySelectorAll("[data-multi]").forEach(container=>{
-    const key = container.getAttribute("data-multi");
-    container.querySelectorAll(".chip").forEach(chip=>{
-      chip.onclick = ()=>{
-        const opt = chip.getAttribute("data-opt");
-        const data = loadData();
-        const parts = (location.hash||"").split("/");
-        if(parts[0] !== "#site") return;
-        const siteId = parts[1];
-        const site = getSite(data, siteId);
-        if(!site) return;
-        site[key] = site[key] || [];
-        const idx = site[key].indexOf(opt);
-        if(idx>=0) site[key].splice(idx,1); else site[key].push(opt);
-        site.updatedAt = nowIso();
-        saveData(data);
-        route();
-      };
-    });
-  });
-}
-
-window.openHandingHelp = function(){
-  modal(`<div class="modalHeader"><h3>Handing reference</h3><button onclick="this.closest('.modalBackdrop').remove()">Close</button></div><img src="./handing_ref.jpg" alt="handing"/>`);
-};
-
-function route(){
-  const app = document.getElementById("app");
-  const hash = location.hash || "#home";
-  const parts = hash.split("/");
-  const view = parts[0];
-  const data = loadData();
-
-  if(view==="#home"){
-    const sites = Object.values(data.sites).sort((a,b)=>(b.updatedAt||"").localeCompare(a.updatedAt||""));
-    const cards = sites.map(s=>{
-      const doorCount = s.doors ? Object.keys(s.doors).length : 0;
-      let thumbs = "";
-      const firstDoor = s.doors ? Object.values(s.doors)[0] : null;
-      if(firstDoor && firstDoor.photos){
-        const out = firstDoor.photos.photo_outside_closed && firstDoor.photos.photo_outside_closed.dataUrl;
-        const inn = firstDoor.photos.photo_inside_closed && firstDoor.photos.photo_inside_closed.dataUrl;
-        if(out || inn){
-          thumbs = `<div class="thumbPair"><img src="${inn || out}" alt="inside"/><img src="${out || inn}" alt="outside"/></div>`;
-        }
-      }
-      return `<div class="card"><div class="row" style="justify-content:space-between;">
-        <div style="min-width:0;">
-          <div><b>${escapeHtml(s.customer||"Untitled")}</b></div>
-          <div class="muted small">${escapeHtml(s.siteName||"")}</div>
-          <div class="muted small">${doorCount} doors</div>
-          ${thumbs}
-        </div>
-        <div class="row"><button class="primary" onclick="location.hash='#site/${s.id}'">Open</button></div>
-      </div></div>`;
-    }).join("");
-    app.innerHTML = `<div class="card"><h2>Start</h2><div class="row">
-      <button class="primary" onclick="newSite()">New site</button>
-      <button onclick="exportAll()">Export all data</button>
-      <button onclick="importData()">Import data</button>
-    </div><div class="muted small" style="margin-top:10px;">Data is stored on this device. Export often.</div></div>
-    <div class="card"><h2>Sites</h2>${cards || "<div class='muted'>No sites yet</div>"}</div>`;
-    attachMultiHandlers();
-    return;
-  }
-
-  if(view==="#site" && parts[1]){
-    const siteId = parts[1];
-    const site = getSite(data, siteId);
-    if(!site){ location.hash="#home"; return; }
-
-    const doors = Object.values(site.doors||{}).sort((a,b)=>(a.doorId||"").localeCompare(b.doorId||""));
-    const doorCards = doors.map(d=>{
-      const st = calcDoorStatus(d);
-      return `<div class="card"><div class="row" style="justify-content:space-between;">
-        <div><div><b>${escapeHtml(d.doorId||"Door")}</b> <span class="pill">${st.complete ? "Complete" : "Incomplete"}</span></div>
-        <div class="muted small">${escapeHtml(d.location||"")}</div></div>
-        <div class="row"><button onclick="location.hash='#door/${siteId}/${d.id}'">Edit</button></div>
-      </div></div>`;
-    }).join("");
-
-    app.innerHTML = `<div class="card"><h2>Site info</h2>
-      <div class="grid2">
-        <div><label>Customer</label><input value="${escapeHtml(site.customer||"")}" oninput="updateSiteField('${siteId}','customer',this.value)"/></div>
-        <div><label>Site name</label><input value="${escapeHtml(site.siteName||"")}" oninput="updateSiteField('${siteId}','siteName',this.value)"/></div>
-        <div><label>Address</label><input value="${escapeHtml(site.address||"")}" oninput="updateSiteField('${siteId}','address',this.value)"/></div>
-        <div><label>Contact name</label><input value="${escapeHtml(site.contactName||"")}" oninput="updateSiteField('${siteId}','contactName',this.value)"/></div>
-        <div><label>Contact phone</label><input value="${escapeHtml(site.contactPhone||"")}" oninput="updateSiteField('${siteId}','contactPhone',this.value)"/></div>
-      </div>
-
-      ${multiSelectChips("Credentials","credentials",site.credentials,["PIN","Prox card","Keychain fob","Phone credentials","Remote entry only","Other"])}
-
-      <details open style="margin-top:12px;"><summary>System goals</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${radioYesNo("Remote management required","goalRemoteMgmt",site.goalRemoteMgmt,`updateSiteField('${siteId}','goalRemoteMgmt',this.value)`)}
-          ${radioYesNo("Audit trail required","goalAudit",site.goalAudit,`updateSiteField('${siteId}','goalAudit',this.value)`)}
-          ${radioYesNo("Open to monthly subscription for cloud dashboard","goalCloudOk",site.goalCloudOk,`updateSiteField('${siteId}','goalCloudOk',this.value)`)}
-          ${radioYesNo("Needs local only management","goalLocalOnly",site.goalLocalOnly,`updateSiteField('${siteId}','goalLocalOnly',this.value)`)}
-          ${radioYesNo("Wants us to manage software monthly for added fee","goalWeManageSoftware",site.goalWeManageSoftware,`updateSiteField('${siteId}','goalWeManageSoftware',this.value)`)}
-        </div>
-
-        <div style="margin-top:12px;">
-          ${radioYesNo("Existing access control system present","existingSystemPresent",site.existingSystemPresent,`updateSiteField('${siteId}','existingSystemPresent',this.value)`, true)}
-        </div>
-
-        ${site.existingSystemPresent==="yes" ? `
-          <div class="grid2" style="margin-top:10px;">
-            <div><label>What system</label><input value="${escapeHtml(site.existingSystemName||"")}" oninput="updateSiteField('${siteId}','existingSystemName',this.value)"/></div>
-            <div><label>Wired or wireless</label>
-              <select onchange="updateSiteField('${siteId}','existingSystemWired',this.value)">
-                ${["","wired","wireless","unknown"].map(v=>`<option value="${v}" ${site.existingSystemWired===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-              </select></div>
-            <div><label>How many doors</label><input value="${escapeHtml(site.existingSystemDoorCount||"")}" oninput="updateSiteField('${siteId}','existingSystemDoorCount',this.value)" inputmode="numeric"/></div>
-            <div><label>Known problems</label><input value="${escapeHtml(site.existingSystemProblems||"")}" oninput="updateSiteField('${siteId}','existingSystemProblems',this.value)"/></div>
-          </div>` : ""}
-
-        <div class="grid2" style="margin-top:12px;">
-          <div><label>Camera interest</label>
-            <select onchange="updateSiteField('${siteId}','cameraInterest',this.value)">
-              ${["","not interested","maybe","yes"].map(v=>`<option value="${v}" ${site.cameraInterest===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select></div>
-          <div><label>Indoor camera count estimate</label><input value="${escapeHtml(site.cameraIndoorCount||"")}" oninput="updateSiteField('${siteId}','cameraIndoorCount',this.value)" inputmode="numeric"/></div>
-          <div><label>Outdoor camera count estimate</label><input value="${escapeHtml(site.cameraOutdoorCount||"")}" oninput="updateSiteField('${siteId}','cameraOutdoorCount',this.value)" inputmode="numeric"/></div>
-          <div><label>Camera notes</label><input value="${escapeHtml(site.cameraNotes||"")}" oninput="updateSiteField('${siteId}','cameraNotes',this.value)"/></div>
-        </div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Site defaults</summary>
-        <div class="muted small" style="margin-top:8px;">Used to prefill new doors. Each door can override.</div>
-        <div class="grid2" style="margin-top:10px;">
-          <div><label>Key blank default</label><input value="${escapeHtml(site.keyBlankDefault||"")}" oninput="updateSiteField('${siteId}','keyBlankDefault',this.value)"/></div>
-          ${selectField("Door material default",site.defaultDoorMaterial,["hollow metal","aluminum storefront","wood","glass","other"],`updateSiteField('${siteId}','defaultDoorMaterial',this.value)`)}
-          ${selectField("Frame material default",site.defaultFrameMaterial,["hollow metal","aluminum storefront","wood","concrete filled steel","other"],`updateSiteField('${siteId}','defaultFrameMaterial',this.value)`)}
-          ${selectField("Lock type default",site.defaultLockType,["cylindrical","mortise","panic","deadbolt","other"],`updateSiteField('${siteId}','defaultLockType',this.value)`)}
-          <div><label>Exterior trim type default</label><input value="${escapeHtml(site.defaultExteriorTrimType||"")}" oninput="updateSiteField('${siteId}','defaultExteriorTrimType',this.value)"/></div>
-          <div><label>Hinge type default</label><input value="${escapeHtml(site.defaultHingeType||"")}" oninput="updateSiteField('${siteId}','defaultHingeType',this.value)"/></div>
-          <div><label>Hinge count default</label><input value="${escapeHtml(site.defaultHingeCount||"")}" oninput="updateSiteField('${siteId}','defaultHingeCount',this.value)" inputmode="numeric"/></div>
-          <div><label>Backset default</label>
-            <select onchange="updateSiteField('${siteId}','defaultBackset',this.value)">
-              ${["","31/32","1 1/8","1 1/2","2 3/8","2 3/4","other"].map(v=>`<option value="${v}" ${site.defaultBackset===v?"selected":""}>${v||"Select"}</option>`).join("")}
-            </select></div>
-          ${radioYesNo("Closer present default","defaultCloserPresent",site.defaultCloserPresent,`updateSiteField('${siteId}','defaultCloserPresent',this.value)`, true)}
-          <div><label>Closer model default</label><input value="${escapeHtml(site.defaultCloserModel||"")}" oninput="updateSiteField('${siteId}','defaultCloserModel',this.value)"/><div class="muted small">Reminder take a picture</div></div>
-        </div>
-      </details>
-
-      <label>Notes</label><textarea oninput="updateSiteField('${siteId}','notes',this.value)">${escapeHtml(site.notes||"")}</textarea>
-
-      <div class="row" style="margin-top:10px;">
-        <button class="primary" onclick="addDoor('${siteId}')">Add door</button>
-        <button onclick="location.hash='#summary/${siteId}'">Site summary</button>
-        <button onclick="exportSite('${siteId}')">Export site</button>
-        <button onclick="location.hash='#home'">Back</button>
-      </div>
-    </div>
-
-    <div class="card"><h2>Doors</h2>${doorCards || "<div class='muted'>No doors yet</div>"}</div>`;
-    attachMultiHandlers();
-    return;
-  }
-
-  if(view==="#door" && parts[1] && parts[2]){
-    const siteId = parts[1];
-    const doorId = parts[2];
-    const site = getSite(data, siteId);
-    if(!site || !site.doors || !site.doors[doorId]){ location.hash="#site/"+siteId; return; }
-    const door = site.doors[doorId];
-    const st = calcDoorStatus(door);
-
-    const handingHelp = `<span class="helpIcon" onclick="openHandingHelp()">?</span>`;
-    const photoSlots = [
-      {key:"photo_outside_closed", label:"Outside door closed", required:true},
-      {key:"photo_inside_closed", label:"Inside door closed", required:true},
-      {key:"photo_edge", label:"Door edge", required:true},
-      {key:"photo_strike", label:"Strike closeup", required:true},
-      {key:"photo_hinges", label:"Hinges closeup"},
-      {key:"photo_frame_profile", label:"Frame profile side"},
-      {key:"photo_exterior_trim", label:"Exterior trim closeup"},
-      {key:"photo_interior_trim", label:"Interior trim closeup"},
-      {key:"photo_model_numbers", label:"Hardware model numbers"},
-      {key:"photo_key", label:"Key photo"},
-      {key:"photo_extras", label:"Extras on door"}
-    ];
-
-    const photoHtml = photoSlots.map(slot=>{
-      const obj = (door.photos && door.photos[slot.key]) || null;
-      const img = obj && obj.dataUrl ? `<img src="${obj.dataUrl}" alt="photo"/>` : `<div class="muted small">No photo</div>`;
-      const req = slot.required ? `<span class="pill accent">Required</span>` : `<span class="pill">Optional</span>`;
-      return `<div class="photoSlot">
-        <div class="row" style="justify-content:space-between;"><div><b>${escapeHtml(slot.label)}</b></div>${req}</div>
-        <div style="margin-top:10px;">${img}</div>
-        <div class="row" style="margin-top:10px;">
-          <input type="file" accept="image/*" capture="environment" onchange="setPhoto('${siteId}','${doorId}','${slot.key}', this.files[0])"/>
-          ${obj && obj.dataUrl ? `<button onclick="removePhoto('${siteId}','${doorId}','${slot.key}')">Remove</button>` : ""}
-        </div></div>`;
-    }).join("");
-
-    const frameRef = (door.frameSketch && door.frameSketch.ref) || "";
-
-    app.innerHTML = `<div class="card"><h2>Door</h2>
-      <div class="grid2">
-        <div><label>Door ID</label><input value="${escapeHtml(door.doorId||"")}" oninput="updateDoorField('${siteId}','${doorId}','doorId',this.value)"/></div>
-        <div><label>Location label</label><input value="${escapeHtml(door.location||"")}" oninput="updateDoorField('${siteId}','${doorId}','location',this.value)"/></div>
-      </div>
-
-      ${!st.complete ? `<div class="warnBox" style="margin-top:12px;"><b>Warning</b>
-        <div class="muted small" style="margin-top:6px;">Missing fields: ${escapeHtml(st.missing.join(", ")) || "None"}</div>
-        <div class="muted small" style="margin-top:6px;">Missing required photos: ${escapeHtml(st.missingPhotos.join(", ")) || "None"}</div>
-      </div>` : ""}
-
-      <details open style="margin-top:12px;"><summary>Door and frame</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${selectField("Interior or exterior",door.intExt,["interior","exterior"],`updateDoorField('${siteId}','${doorId}','intExt',this.value)`)}
-          ${selectField("Door type",door.doorType,["single","double with mullion","double no mullion"],`updateDoorField('${siteId}','${doorId}','doorType',this.value)`)}
-          ${selectField("Door material",door.doorMaterial,["hollow metal","aluminum storefront","wood","glass","other"],`updateDoorField('${siteId}','${doorId}','doorMaterial',this.value)`)}
-          ${selectField("Frame material",door.frameMaterial,["hollow metal","aluminum storefront","wood","concrete filled steel","other"],`updateDoorField('${siteId}','${doorId}','frameMaterial',this.value)`)}
-          ${selectField("Swing",door.swing,["inswing","outswing"],`updateDoorField('${siteId}','${doorId}','swing',this.value)`)}
-          <div><label>Handing ${handingHelp}</label>
-            <select onchange="updateDoorField('${siteId}','${doorId}','handing',this.value)">
-              ${["","LH","RH","LHR","RHR","unknown"].map(v=>`<option value="${v}" ${door.handing===v?"selected":""}>${v||"Select"}</option>`).join("")}
-            </select></div>
-          ${radioYesNo("Closer present","closerPresent",door.closerPresent,`updateDoorField('${siteId}','${doorId}','closerPresent',this.value)`, true)}
-          ${radioYesNo("Alignment issues","alignmentIssues",door.alignmentIssues,`updateDoorField('${siteId}','${doorId}','alignmentIssues',this.value)`, true)}
-        </div>
-
-        ${door.doorType==="double no mullion" ? `<div class="grid2" style="margin-top:10px;">
-          ${radioYesNo("Astragal present","astragal",door.astragal,`updateDoorField('${siteId}','${doorId}','astragal',this.value)`, true)}
-          <div><label>Active leaf</label><select onchange="updateDoorField('${siteId}','${doorId}','activeLeaf',this.value)">
-            ${["","left","right","unknown"].map(v=>`<option value="${v}" ${door.activeLeaf===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-          </select></div></div>` : ""}
-
-        ${door.closerPresent==="yes" ? `<div style="margin-top:10px;"><label>Closer model</label>
-          <input value="${escapeHtml(door.closerModel||"")}" oninput="updateDoorField('${siteId}','${doorId}','closerModel',this.value)" placeholder="Enter model and take a picture"/>
-          <div class="muted small">Reminder take a picture</div></div>` : ""}
-
-        ${door.alignmentIssues==="yes" ? `<div style="margin-top:10px;"><label>Alignment notes</label>
-          <input value="${escapeHtml(door.alignmentNotes||"")}" oninput="updateDoorField('${siteId}','${doorId}','alignmentNotes',this.value)"/></div>` : ""}
-
-        <div class="grid2" style="margin-top:10px;">
-          <div><label>Exterior keypad mount construction</label><input value="${escapeHtml(door.exteriorKeypadConstruction||"")}" oninput="updateDoorField('${siteId}','${doorId}','exteriorKeypadConstruction',this.value)"/></div>
-          <div><label>Interior push to exit mount construction</label><input value="${escapeHtml(door.interiorPteConstruction||"")}" oninput="updateDoorField('${siteId}','${doorId}','interiorPteConstruction',this.value)"/></div>
-        </div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Measurements</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${fractionField("Door width",siteId,doorId,"measurements.doorWidth",door.measurements?.doorWidth,"Example 36")}
-          ${fractionField("Opening width",siteId,doorId,"measurements.openingWidth",door.measurements?.openingWidth,"Example 38")}
-          ${fractionField("Frame width",siteId,doorId,"measurements.frameWidth",door.measurements?.frameWidth,"Overall frame")}
-          ${fractionField("Door height",siteId,doorId,"measurements.doorHeight",door.measurements?.doorHeight,"Example 80")}
-          ${fractionField("Door stile thickness",siteId,doorId,"measurements.doorStileThickness",door.measurements?.doorStileThickness,"Lock side stile")}
-          ${fractionField("Centerline from floor",siteId,doorId,"measurements.centerlineFromFloor",door.measurements?.centerlineFromFloor,"To center of hardware")}
-          ${fractionField("Door thickness",siteId,doorId,"doorThickness",door.doorThickness,"Example 1 3/4")}
-        </div>
-        <div style="margin-top:10px;"><label>Weather blade or jamb notes</label>
-          <input value="${escapeHtml(door.measurements?.weatherNotes||"")}" oninput="updateDoorField('${siteId}','${doorId}','measurements.weatherNotes',this.value)"/></div>
-        <div class="card" style="margin-top:12px;"><h2 style="margin:0 0 6px;">Measurement references</h2>
-          <div class="photoGrid">
-            <div><img src="./single_door_measurements.jpg" style="width:100%;border-radius:14px;border:var(--border);" alt="single"/></div>
-            <div><img src="./double_door_measurements.jpg" style="width:100%;border-radius:14px;border:var(--border);" alt="double"/></div>
-          </div></div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Frame sketch</summary>
-        <div class="grid2" style="margin-top:10px;">
-          <div><label>Reference</label>
-            <select onchange="updateDoorField('${siteId}','${doorId}','frameSketch.ref',this.value)">
-              ${["","Frame Ref 1","Frame Ref 2"].map(v=>`<option value="${v}" ${frameRef===v?"selected":""}>${v||"Select"}</option>`).join("")}
-            </select>
-            <div class="muted small" style="margin-top:8px;">Use the lettered sketch and enter each dimension in fractional inches</div>
-          </div>
-        </div>
-        ${frameRef ? `<div style="margin-top:12px;"><img src="${frameRef==="Frame Ref 1" ? "./frame_ref_1.jpg" : "./frame_ref_2.jpg"}" style="width:100%;border-radius:14px;border:var(--border);" alt="frame ref"/></div>` : ""}
-        <div class="grid2" style="margin-top:12px;">
-          ${fractionField("A",siteId,doorId,"frameSketch.A",door.frameSketch?.A,"A")}
-          ${fractionField("B",siteId,doorId,"frameSketch.B",door.frameSketch?.B,"B")}
-          ${fractionField("C",siteId,doorId,"frameSketch.C",door.frameSketch?.C,"C")}
-          ${fractionField("D",siteId,doorId,"frameSketch.D",door.frameSketch?.D,"D")}
-          ${fractionField("E",siteId,doorId,"frameSketch.E",door.frameSketch?.E,"E")}
-          ${fractionField("F",siteId,doorId,"frameSketch.F",door.frameSketch?.F,"F")}
-        </div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Existing hardware</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${selectField("Lock type",door.lockType,["cylindrical","mortise","panic","deadbolt","other"],`updateDoorField('${siteId}','${doorId}','lockType',this.value)`)}
-          <div><label>Key blank</label><input value="${escapeHtml(door.keyBlank||"")}" oninput="updateDoorField('${siteId}','${doorId}','keyBlank',this.value)"/></div>
-          <div><label>Backset</label>
-            <select onchange="updateDoorField('${siteId}','${doorId}','backset',this.value)">
-              ${["","31/32","1 1/8","1 1/2","2 3/8","2 3/4","other"].map(v=>`<option value="${v}" ${door.backset===v?"selected":""}>${v||"Select"}</option>`).join("")}
-            </select></div>
-          ${fractionField("Gap between door and frame",siteId,doorId,"doorFrameGap",door.doorFrameGap,"Example 1/8")}
-          <div><label>Hinge type</label><input value="${escapeHtml(door.hingeType||"")}" oninput="updateDoorField('${siteId}','${doorId}','hingeType',this.value)"/></div>
-          <div><label>Hinge count</label><input value="${escapeHtml(door.hingeCount||"")}" oninput="updateDoorField('${siteId}','${doorId}','hingeCount',this.value)" inputmode="numeric"/></div>
-        </div>
-        ${door.lockType && door.lockType !== "cylindrical" ? `<div style="margin-top:10px;"><label>Exterior trim type</label>
-          <input value="${escapeHtml(door.exteriorTrimType||"")}" oninput="updateDoorField('${siteId}','${doorId}','exteriorTrimType',this.value)"/></div>` : ""}
-        <div style="margin-top:10px;"><label>Other items on door</label>
-          <input value="${escapeHtml(door.otherItemsOnDoor||"")}" oninput="updateDoorField('${siteId}','${doorId}','otherItemsOnDoor',this.value)"/></div>
-        <div class="grid2" style="margin-top:10px;">
-          <div><label>Function</label><select onchange="updateDoorField('${siteId}','${doorId}','functionCurrent',this.value)">
-            ${["","storeroom","office","classroom","passage","entry","exit only","unknown"].map(v=>`<option value="${v}" ${door.functionCurrent===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-          </select></div>
-          <div><label>Change function to</label><select onchange="updateDoorField('${siteId}','${doorId}','functionChangeTo',this.value)">
-            ${["N/A","storeroom","office","classroom","passage","entry","exit only","unknown"].map(v=>`<option value="${v}" ${door.functionChangeTo===v?"selected":""}>${v==="N/A"?"N/A":makeTitleCase(v)}</option>`).join("")}
-          </select></div>
-        </div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Power and connectivity</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${radioYesNo("Power near door","powerNearDoor",door.powerNearDoor,`updateDoorField('${siteId}','${doorId}','powerNearDoor',this.value)`, true)}
-          <div><label>Wire path</label><select onchange="updateDoorField('${siteId}','${doorId}','wirePath',this.value)">
-            ${["","existing conduit","new conduit","drop ceiling","attic","none","unknown"].map(v=>`<option value="${v}" ${door.wirePath===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-          </select></div>
-          <div><label>Wifi strength</label><select onchange="updateDoorField('${siteId}','${doorId}','wifiStrength',this.value)">
-            ${["","none","weak","medium","strong"].map(v=>`<option value="${v}" ${door.wifiStrength===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-          </select></div>
-        </div>
-        <label>Notes</label><textarea oninput="updateDoorField('${siteId}','${doorId}','powerNotes',this.value)">${escapeHtml(door.powerNotes||"")}</textarea>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Use case</summary>
-        <div class="grid2" style="margin-top:10px;">
-          <div><label>User count estimate</label><input value="${escapeHtml(door.userCount||"")}" oninput="updateDoorField('${siteId}','${doorId}','userCount',this.value)" inputmode="numeric"/></div>
-          ${radioYesNo("Need schedules","needSchedules",door.needSchedules,`updateDoorField('${siteId}','${doorId}','needSchedules',this.value)`, true)}
-          ${radioYesNo("Remote management","remoteMgmt",door.remoteMgmt,`updateDoorField('${siteId}','${doorId}','remoteMgmt',this.value)`, true)}
-          ${radioYesNo("Audit trail","auditTrail",door.auditTrail,`updateDoorField('${siteId}','${doorId}','auditTrail',this.value)`, true)}
-          ${radioYesNo("Temporary access","tempAccess",door.tempAccess,`updateDoorField('${siteId}','${doorId}','tempAccess',this.value)`, true)}
-        </div>
-        <label>Notes</label><textarea oninput="updateDoorField('${siteId}','${doorId}','useNotes',this.value)">${escapeHtml(door.useNotes||"")}</textarea>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Life safety and fire</summary>
-        <div class="grid2" style="margin-top:10px;">
-          ${radioYesNo("Panic required","panicRequired",door.panicRequired,`updateDoorField('${siteId}','${doorId}','panicRequired',this.value)`, true)}
-          ${radioYesNo("Free egress required","freeEgress",door.freeEgress,`updateDoorField('${siteId}','${doorId}','freeEgress',this.value)`, true)}
-          ${radioYesNo("Maglock allowed","maglockAllowed",door.maglockAllowed,`updateDoorField('${siteId}','${doorId}','maglockAllowed',this.value)`, true)}
-        </div>
-
-        <div class="card" style="margin-top:12px;"><h2 style="margin:0 0 6px;">Fire rating</h2>
-          <div class="grid2" style="margin-top:10px;">
-            <div><label>Fire rated opening</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.isRated',this.value)">
-              ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.isRated)===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select></div>
-            <div><label>Rating hours</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.ratingHours',this.value)">
-              ${["","20 minute","45 minute","60 minute","90 minute","3 hour","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.ratingHours)===v?"selected":""}>${v||"Select"}</option>`).join("")}
-            </select></div>
-            <div><label>Hardware fire rated</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.hardwareRated',this.value)">
-              ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.hardwareRated)===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select></div>
-            <div><label>Fire panel present</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.firePanel',this.value)">
-              ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.firePanel)===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select><div class="muted small">Large red box mounted on a wall</div></div>
-            <div><label>Sprinklers present</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.sprinklers',this.value)">
-              ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.sprinklers)===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select></div>
-            <div><label>Needs tie in to fire panel</label><select onchange="updateDoorField('${siteId}','${doorId}','fire.tieIn',this.value)">
-              ${["","yes","no","unknown"].map(v=>`<option value="${v}" ${(door.fire&&door.fire.tieIn)===v?"selected":""}>${v?makeTitleCase(v):"Select"}</option>`).join("")}
-            </select></div>
-          </div>
-          <label>Door label text</label><input value="${escapeHtml(door.fire?.doorLabelText||"")}" oninput="updateDoorField('${siteId}','${doorId}','fire.doorLabelText',this.value)"/>
-          <label>Frame label text</label><input value="${escapeHtml(door.fire?.frameLabelText||"")}" oninput="updateDoorField('${siteId}','${doorId}','fire.frameLabelText',this.value)"/>
-          <label>Firewall label text</label><input value="${escapeHtml(door.fire?.firewallLabelText||"")}" oninput="updateDoorField('${siteId}','${doorId}','fire.firewallLabelText',this.value)"/>
-        </div>
-      </details>
-
-      <details style="margin-top:12px;"><summary>Photos</summary>
-        <div class="muted small" style="margin-top:8px;">Required photos must be captured to mark door complete</div>
-        <div class="photoGrid" style="margin-top:10px;">${photoHtml}</div>
-      </details>
-
-      <div class="row" style="margin-top:12px;">
-        <button onclick="location.hash='#site/${siteId}'">Back</button>
-        <button onclick="duplicateDoor('${siteId}','${doorId}')">Duplicate door</button>
-        <button onclick="deleteDoor('${siteId}','${doorId}')">Delete door</button>
-      </div>
-    </div>`;
-    attachMultiHandlers();
-    return;
-  }
-
-  if(view==="#summary" && parts[1]){
-    const siteId = parts[1];
-    const site = getSite(data, siteId);
-    if(!site){ location.hash="#home"; return; }
-    const doors = Object.values(site.doors||{}).sort((a,b)=>(a.doorId||"").localeCompare(b.doorId||""));
-    const issues = [];
-    const rows = doors.map(d=>{
-      const st = calcDoorStatus(d);
-      if(!st.complete){
-        if(st.missing.length) issues.push(`Door ${d.doorId||""} missing fields: ${st.missing.join(", ")}`);
-        if(st.missingPhotos.length) issues.push(`Door ${d.doorId||""} missing photos: ${st.missingPhotos.join(", ")}`);
-      }
-      return `<tr><td>${escapeHtml(d.doorId||"")}</td><td>${escapeHtml(d.location||"")}</td><td>${st.complete ? "Yes" : "No"}</td></tr>`;
-    }).join("");
-
-    app.innerHTML = `<div class="card"><h2>Site summary</h2>
-      ${issues.length ? `<div class="warnBox"><b>Warnings</b><ul class="small muted" style="margin:8px 0 0;">${issues.map(i=>`<li>${escapeHtml(i)}</li>`).join("")}</ul></div>` : `<div class="muted">No warnings</div>`}
-      <div class="row" style="margin-top:12px;">
-        <button class="primary" onclick="exportSite('${siteId}')">Export site</button>
-        <button onclick="downloadReport('${siteId}')">Download report</button>
-        <button onclick="location.hash='#site/${siteId}'">Back</button>
-      </div></div>
-      <div class="card"><h2>Doors</h2>
-        <table style="width:100%;border-collapse:collapse;">
-          <thead><tr><th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Door</th>
-          <th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Location</th>
-          <th style="border:1px solid rgba(0,0,0,.2);padding:8px;font-size:12px;">Complete</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
-    attachMultiHandlers();
-    return;
-  }
-
-  location.hash="#home";
-}
 
 window.addEventListener("hashchange", route);
 
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("./sw.js");
 }
+
 route();
 </script>
 </body>
