@@ -120,6 +120,7 @@
       box-shadow:0 0 0 1px rgba(236,86,40,.20) inset;
     }
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
     .muted{color:var(--muted);}
     .small{font-size:var(--fontSmall);}
     .grid2{display:grid;grid-template-columns:1fr;gap:12px;}
@@ -873,6 +874,7 @@ function route(){
           <button class="primary" onclick="addDoor('${siteId}')">Add door</button>
           <button onclick="location.hash='#summary/${siteId}'">Site summary</button>
           <button onclick="exportSite('${siteId}')">Export site</button>
+          <button class="primary" onclick="generatePdf('${siteId}')">Generate PDF</button>
           <button onclick="location.hash='#home'">Back</button>
         </div>
       </div>
@@ -943,8 +945,11 @@ function route(){
             ${req}
           </div>
           <div style="margin-top:10px;">${img}</div>
-          <div class="row" style="margin-top:10px;">
-            <input type="file" accept="image/*" capture="environment" onchange="setPhoto('${siteId}','${doorId}','${slot.key}', this.files[0])"/>
+          <div class="btnRow" style="margin-top:10px;">
+            <input id="cam_${slot.key}" type="file" accept="image/*" capture="environment" style="display:none" onchange="setPhoto('${siteId}','${doorId}','${slot.key}', this.files[0])"/>
+            <input id="gal_${slot.key}" type="file" accept="image/*" style="display:none" onchange="setPhoto('${siteId}','${doorId}','${slot.key}', this.files[0])"/>
+            <button class="primary" onclick="document.getElementById('cam_${slot.key}').click()">Take photo</button>
+            <button onclick="document.getElementById('gal_${slot.key}').click()">Choose from gallery</button>
             ${obj && obj.dataUrl ? `<button onclick="removePhoto('${siteId}','${doorId}','${slot.key}')">Remove</button>` : ""}
           </div>
         </div>
@@ -1291,6 +1296,7 @@ function route(){
         <h2>Site summary</h2>
         ${issues.length ? `
           <div class="warnBox">
+            <div class="muted small" style="margin-top:6px;">Export works even if doors are incomplete.</div>
             <b>Warnings</b>
             <ul class="small muted" style="margin:8px 0 0;">
               ${issues.map(i=>`<li>${escapeHtml(i)}</li>`).join("")}
@@ -1301,6 +1307,7 @@ function route(){
         <div class="row" style="margin-top:12px;">
           <button class="primary" onclick="exportSite('${siteId}')">Export site</button>
           <button onclick="downloadReport('${siteId}')">Download report</button>
+          <button class="primary" onclick="generatePdf('${siteId}')">Generate PDF</button>
           <button onclick="location.hash='#site/${siteId}'">Back</button>
         </div>
       </div>
@@ -1569,6 +1576,51 @@ window.downloadReport = function(siteId){
   const safeName = (site.customer || "site").replaceAll(" ","_");
   downloadTextFile("pal_acs_report_" + safeName + ".html", html, "text/html");
 };
+
+window.generatePdf = function(siteId){
+  const data = loadData();
+  const site = getSite(data, siteId);
+  if(!site) return;
+
+  const html = buildReportHtml(site);
+
+  const w = window.open("", "_blank");
+  if(!w){
+    alert("Popup blocked. Please allow popups for this app, then try again.");
+    return;
+  }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+
+  const tryPrint = () => {
+    try{
+      w.focus();
+      w.print();
+    }catch{}
+  };
+
+  const imgs = w.document.images;
+  if(!imgs || imgs.length === 0){
+    setTimeout(tryPrint, 400);
+    return;
+  }
+
+  let remaining = imgs.length;
+  const done = () => {
+    remaining -= 1;
+    if(remaining <= 0) setTimeout(tryPrint, 300);
+  };
+
+  for(const img of imgs){
+    if(img.complete) done();
+    else{
+      img.addEventListener("load", done);
+      img.addEventListener("error", done);
+    }
+  }
+};
+
 
 window.importData = function(){
   const inp = document.createElement("input");

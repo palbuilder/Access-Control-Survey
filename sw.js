@@ -1,4 +1,4 @@
-const CACHE_NAME = "pal_acs_cache_v3";
+const CACHE_NAME = "pal_acs_cache_v4";
 const ASSETS = [
   "./",
   "./index.html",
